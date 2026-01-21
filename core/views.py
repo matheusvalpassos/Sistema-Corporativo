@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Count, Sum
-from .models import Funcionario, Posto
+from .models import Funcionario, Posto, Bandeira
 from .serializers import FuncionarioSerializer, PostoSerializer
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -47,3 +47,20 @@ class FuncionarioViewSet(viewsets.ModelViewSet):
 @login_required(login_url='/admin/login/') # Se não estiver logado, manda pro login do Admin por enquanto
 def home(request):
     return render(request, 'index.html')
+
+# Chamamos essa função quando acessamos /funcionarios/ pro HTML renderizar as funções
+@login_required(login_url='/admin/login/')
+def lista_funcionarios(request):
+    # Passamos as tuplas de opções e a lista de postos reais para o HTML
+    context = {
+        'opcoes_setores': Funcionario.SETORES,
+        'opcoes_cargos': Funcionario.CARGOS,
+        'lista_postos': Posto.objects.all(), # Para preencher o select de postos
+    }
+    return render(request, 'funcionarios.html', context)
+
+@login_required(login_url='login')
+def lista_postos(request):
+    # Busca todas as bandeiras cadastradas para o select
+    opcoes_bandeiras = Bandeira.objects.all()
+    return render(request, 'postos.html', {'opcoes_bandeiras': opcoes_bandeiras})

@@ -3,79 +3,104 @@
 {% block title %}Dashboard - Rede Bellas{% endblock %}
 
 {% block content %}
-    <div class="mb-8">
-        <h2 class="text-2xl font-bold text-gray-800">Visão Geral</h2>
-        <p class="text-[#52525b]">Bem-vindo ao sistema de gestão da Rede Bellas.</p>
+<div class="flex flex-col h-full">
+    
+    <div class="bg-white border-b border-gray-200 px-6 py-4 mb-6 flex justify-between items-center shadow-sm">
+        <div>
+            <h1 class="text-xl font-bold text-gray-800 tracking-tight">Dashboard Geral</h1>
+            <p class="text-xs text-gray-500 font-medium">Visão consolidada da rede</p>
+        </div>
+        <div class="text-xs text-gray-400 font-mono">
+            {% now "d/m/Y H:i" %}
+        </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="px-6 pb-6">
         
-        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-[#b91c1c] relative overflow-hidden group hover:shadow-md transition">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="text-[#52525b] text-xs font-bold uppercase tracking-wider">Funcionários Ativos</h3>
-                    <p class="text-3xl font-bold text-gray-800 mt-2" id="lblTotalFunc">--</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all group">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Funcionários Ativos</h3>
+                        <p class="text-3xl font-bold text-gray-800" id="lblTotalFunc">--</p>
+                    </div>
+                    <div class="p-3 bg-red-50 rounded-lg text-[#b91c1c] group-hover:bg-[#b91c1c] group-hover:text-white transition-colors">
+                        <i class="fas fa-users text-lg"></i>
+                    </div>
                 </div>
-                <div class="p-3 bg-red-50 rounded-full text-[#b91c1c]">
-                    <i class="fas fa-users"></i>
+                <div class="mt-4 flex items-center text-xs text-gray-400">
+                    <span class="text-green-500 font-bold mr-1"><i class="fas fa-arrow-up"></i> 2%</span> desde mês passado
                 </div>
             </div>
-        </div>
-        
-        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-[#f97316] relative overflow-hidden group hover:shadow-md transition">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="text-[#52525b] text-xs font-bold uppercase tracking-wider">Postos Operando</h3>
-                    <p class="text-3xl font-bold text-gray-800 mt-2" id="lblTotalPostos">--</p>
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all group">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Postos Operando</h3>
+                        <p class="text-3xl font-bold text-gray-800" id="lblTotalPostos">--</p>
+                    </div>
+                    <div class="p-3 bg-orange-50 rounded-lg text-[#f97316] group-hover:bg-[#f97316] group-hover:text-white transition-colors">
+                        <i class="fas fa-gas-pump text-lg"></i>
+                    </div>
                 </div>
-                <div class="p-3 bg-orange-50 rounded-full text-[#f97316]">
-                    <i class="fas fa-gas-pump"></i>
+                <div class="mt-4 flex items-center text-xs text-gray-400">
+                    <span class="text-gray-500 mr-1">Todos operantes</span> hoje
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all group">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Alertas Pendentes</h3>
+                        <p class="text-3xl font-bold text-gray-800">0</p>
+                    </div>
+                    <div class="p-3 bg-yellow-50 rounded-lg text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-colors">
+                        <i class="fas fa-bell text-lg"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-xs text-gray-400">
+                    <span class="text-green-500 mr-1"><i class="fas fa-check"></i></span> Tudo normal
                 </div>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-yellow-500 relative overflow-hidden group hover:shadow-md transition">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="text-[#52525b] text-xs font-bold uppercase tracking-wider">Alertas Pendentes</h3>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">0</p>
-                </div>
-                <div class="p-3 bg-yellow-50 rounded-full text-yellow-600">
-                    <i class="fas fa-bell"></i>
-                </div>
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+            <h3 class="font-bold text-gray-800 mb-4 text-sm uppercase tracking-wide">Ações Frequentes</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                
+                <a href="{% url 'funcionarios' %}" class="p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-[#b91c1c]/50 hover:text-[#b91c1c] text-gray-600 font-medium transition flex items-center justify-center gap-3 group">
+                    <i class="fas fa-user-plus text-lg text-gray-400 group-hover:text-[#b91c1c] transition"></i>
+                    <span>Novo Funcionário</span>
+                </a>
+                
+                <button class="p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-[#f97316]/50 hover:text-[#f97316] text-gray-600 font-medium transition flex items-center justify-center gap-3 group">
+                    <i class="fas fa-file-invoice-dollar text-lg text-gray-400 group-hover:text-[#f97316] transition"></i>
+                    <span>Lançar Venda</span>
+                </button>
+
+                 <a href="{% url 'ti_chamados' %}" class="p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-blue-500/50 hover:text-blue-600 text-gray-600 font-medium transition flex items-center justify-center gap-3 group">
+                    <i class="fas fa-headset text-lg text-gray-400 group-hover:text-blue-600 transition"></i>
+                    <span>Abrir Chamado</span>
+                </a>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-        <h3 class="font-bold text-gray-800 mb-4 border-b pb-2">Acesso Rápido</h3>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            
-            <button class="p-4 border border-gray-200 rounded-lg hover:bg-red-50 hover:border-[#b91c1c] text-[#b91c1c] font-semibold transition flex flex-col items-center gap-2 group">
-                <i class="fas fa-user-plus text-xl group-hover:scale-110 transition"></i>
-                <span>Novo Funcionário</span>
-            </button>
-            
-            <button class="p-4 border border-gray-200 rounded-lg hover:bg-orange-50 hover:border-[#f97316] text-[#f97316] font-semibold transition flex flex-col items-center gap-2 group">
-                <i class="fas fa-file-invoice-dollar text-xl group-hover:scale-110 transition"></i>
-                <span>Lançar Venda</span>
-            </button>
-        </div>
-    </div>
-
-    <script>
-        async function carregarDados() {
-            try {
-                const response = await fetch('/api/core/funcionarios/dashboard_metrics/');
-                if(response.ok) {
-                    const dados = await response.json();
-                    document.getElementById('lblTotalFunc').innerText = dados.cards.total_funcionarios;
-                    document.getElementById('lblTotalPostos').innerText = dados.cards.total_postos;
-                }
-            } catch (error) {
-                console.error("Erro ao carregar dashboard", error);
+<script>
+    async function carregarDados() {
+        try {
+            const response = await fetch('/api/core/funcionarios/dashboard_metrics/');
+            if(response.ok) {
+                const dados = await response.json();
+                document.getElementById('lblTotalFunc').innerText = dados.cards.total_funcionarios;
+                document.getElementById('lblTotalPostos').innerText = dados.cards.total_postos;
             }
+        } catch (error) {
+            console.error("Erro ao carregar dashboard", error);
         }
-        carregarDados();
-    </script>
+    }
+    carregarDados();
+</script>
 {% endblock %}

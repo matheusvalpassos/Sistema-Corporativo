@@ -64,3 +64,12 @@ def lista_postos(request):
     # Busca todas as bandeiras cadastradas para o select
     opcoes_bandeiras = Bandeira.objects.all()
     return render(request, 'postos.html', {'opcoes_bandeiras': opcoes_bandeiras})
+
+@login_required
+def perfil_usuario(request):
+    return render(request, 'perfil.html')
+
+def home(request):
+    if not request.user.is_authenticated:
+        return render(request, 'landing.html') # <--- Cai aqui se não tiver logado
+    return render(request, 'index.html') # <--- Cai aqui se tiver logado

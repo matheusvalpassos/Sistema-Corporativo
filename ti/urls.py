@@ -4,10 +4,7 @@ from .views import AtivoViewSet, ChamadoViewSet, AcompanhamentoViewSet
 
 router = DefaultRouter()
 router.register(r'ativos', AtivoViewSet)
-
-# AQUI ESTÁ A CORREÇÃO: Adicione basename='chamado'
 router.register(r'chamados', ChamadoViewSet, basename='chamado')
-
 router.register(r'acompanhamentos', AcompanhamentoViewSet)
 
 urlpatterns = [

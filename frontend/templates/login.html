@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Rede Bellas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-gray-50 h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+        
+        <div class="bg-[#b91c1c] p-10 text-center relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+            
+            <div class="relative z-10">
+                <div class="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg transform rotate-3">
+                    <img src="{% static 'images/logo-rede-bellas4.png' %}" alt="Logo" class="w-12">
+                </div>
+                <h2 class="text-2xl font-bold text-white tracking-tight">Bem-vindo de volta!</h2>
+                <p class="text-red-200 text-sm mt-1">Acesse sua conta para continuar</p>
+            </div>
+        </div>
+
+        <div class="p-8 pt-8">
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                
+                {% if form.errors %}
+                    <div class="mb-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-700 text-sm rounded-r">
+                        <p class="font-bold">Atenção</p>
+                        <p>Usuário ou senha inválidos.</p>
+                    </div>
+                {% endif %}
+
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Usuário</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-user"></i></span>
+                            <input type="text" name="username" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#f97316] focus:ring-1 focus:ring-[#f97316] transition bg-gray-50 focus:bg-white placeholder-gray-300" placeholder="Digite seu usuário" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Senha</label>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400"><i class="fas fa-lock"></i></span>
+                            <input type="password" name="password" class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#f97316] focus:ring-1 focus:ring-[#f97316] transition bg-gray-50 focus:bg-white placeholder-gray-300" placeholder="••••••••" required>
+                        </div>
+                        <div class="text-right mt-2">
+                            <a href="#" class="text-xs text-gray-400 hover:text-[#f97316] transition">Esqueceu a senha?</a>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full mt-8 bg-[#f97316] hover:bg-orange-600 text-white font-bold py-3.5 rounded-lg shadow-lg hover:shadow-orange-500/30 transition transform hover:-translate-y-0.5">
+                    ENTRAR
+                </button>
+            </form>
+        </div>
+        
+        <div class="bg-gray-50 p-4 text-center border-t border-gray-100">
+            <p class="text-xs text-gray-400">© 2025 Rede Bellas. Uso corporativo restrito.</p>
+        </div>
+    </div>
+
+</body>
+</html>

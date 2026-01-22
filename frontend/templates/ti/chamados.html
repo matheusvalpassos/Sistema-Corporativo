@@ -6,18 +6,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
 <div class="flex flex-col h-full bg-gray-50">
-    
     <div class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm flex-shrink-0 sticky top-0 z-20">
         <div class="flex items-center gap-4">
-            <div class="p-2 bg-blue-50 rounded-lg">
-                <i class="fas fa-headset text-blue-600 text-xl"></i>
-            </div>
+            <div class="p-2 bg-blue-50 rounded-lg"><i class="fas fa-headset text-blue-600 text-xl"></i></div>
             <div>
                 <h1 class="text-xl font-bold text-gray-800 tracking-tight">Service Desk</h1>
                 <p class="text-xs text-gray-500 font-medium">Gestão de incidentes</p>
             </div>
         </div>
-        
         <button onclick="abrirModalChamado()" class="bg-[#f97316] hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg shadow-sm hover:shadow transition flex items-center gap-2 font-bold text-sm tracking-wide transform active:scale-95">
             <i class="fas fa-plus"></i> Nova Solicitação
         </button>
@@ -31,7 +27,7 @@
     </div>
 </div>
 
-<div id="modal-chamado" class="fixed inset-0 bg-gray-900 bg-opacity-40 hidden z-50 flex justify-center items-center backdrop-blur-sm transition-opacity">
+<div id="modal-chamado" class="fixed inset-0 bg-gray-900/60 hidden z-50 flex justify-center items-center backdrop-blur-sm transition-opacity">
     <div class="relative bg-white w-full max-w-lg rounded-xl shadow-2xl flex flex-col max-h-[90vh]">
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
             <h3 class="text-lg font-bold text-gray-800">Nova Solicitação</h3>
@@ -41,7 +37,7 @@
             <form id="form-chamado" onsubmit="criarChamado(event)" class="space-y-4" enctype="multipart/form-data">
                 <div class="group">
                     <label class="block text-gray-700 text-xs font-bold uppercase tracking-wider mb-2">Assunto</label>
-                    <input type="text" name="titulo" required class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] bg-gray-50 focus:bg-white transition-all">
+                    <input type="text" name="titulo" required class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 bg-gray-50 focus:bg-white transition-all">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div class="group">
@@ -59,12 +55,10 @@
                         </select>
                     </div>
                 </div>
-                
                 <div class="group">
-                    <label class="block text-gray-700 text-xs font-bold uppercase tracking-wider mb-2">Anexo (Foto/Print)</label>
+                    <label class="block text-gray-700 text-xs font-bold uppercase tracking-wider mb-2">Anexo</label>
                     <input type="file" name="arquivo" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-orange-50 file:text-[#f97316] hover:file:bg-orange-100 cursor-pointer">
                 </div>
-
                 <div class="group">
                     <label class="block text-gray-700 text-xs font-bold uppercase tracking-wider mb-2">Descrição</label>
                     <textarea name="descricao" rows="4" required class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm bg-gray-50 focus:bg-white resize-none"></textarea>
@@ -78,42 +72,90 @@
     </div>
 </div>
 
-<div id="modal-detalhes" class="fixed inset-0 bg-gray-900 bg-opacity-50 hidden z-50 flex justify-end backdrop-blur-sm transition-all duration-300">
-    <div class="bg-white w-full max-w-2xl h-full shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-full" id="painel-detalhes">
-        <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-start">
-            <div>
-                <div class="flex items-center gap-2 mb-1">
-                    <span id="det-id" class="text-xs font-mono text-gray-400">#000</span>
-                    <span id="det-status" class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide bg-gray-200">Status</span>
-                </div>
-                <h2 id="det-titulo" class="text-lg font-bold text-gray-800 leading-tight">Título</h2>
-                <p id="det-info" class="text-xs text-gray-500 mt-1">Info...</p>
+<div id="modal-detalhes" class="fixed inset-0 bg-black/60 hidden z-50 flex justify-center items-center backdrop-blur-sm transition-all duration-300">
+    <div class="bg-[#f4f5f7] w-full max-w-5xl h-[85vh] rounded-xl shadow-2xl flex flex-col overflow-hidden relative">
+        <button onclick="fecharDetalhes()" class="absolute top-4 right-4 text-gray-500 hover:text-red-500 hover:bg-gray-200 p-2 rounded-full transition z-10"><i class="fas fa-times text-xl"></i></button>
+
+        <div class="px-8 py-6 bg-white border-b border-gray-200">
+            <div class="flex items-center gap-3 mb-2 text-gray-500">
+                <i class="fas fa-ticket-alt"></i>
+                <span id="det-id" class="text-sm font-mono font-bold">#000</span>
+                <span class="mx-1">•</span>
+                <span id="det-posto" class="text-sm">Unidade</span>
             </div>
-            <button onclick="fecharDetalhes()" class="text-gray-400 hover:text-gray-600 p-2"><i class="fas fa-times text-lg"></i></button>
+            <h2 id="det-titulo" class="text-2xl font-bold text-gray-800 leading-tight pr-10">Título do Chamado</h2>
         </div>
-        <div class="flex-1 overflow-y-auto custom-scrollbar p-6 bg-gray-50/50" id="chat-container">
-            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 mb-6">
-                <h4 class="text-xs font-bold text-gray-400 uppercase mb-2">Descrição do Problema</h4>
-                <p id="det-descricao" class="text-sm text-gray-700 whitespace-pre-line mb-3">Descrição...</p>
+
+        <div class="flex-1 overflow-hidden">
+            <div class="h-full grid grid-cols-1 md:grid-cols-3 divide-x divide-gray-200">
                 
-                <div id="det-anexo-area" class="hidden border-t border-gray-100 pt-3">
-                    <span class="text-xs font-bold text-gray-500 block mb-1">Anexo:</span>
-                    <a id="det-anexo-link" href="#" target="_blank" class="flex items-center gap-2 text-blue-600 hover:underline bg-blue-50 p-2 rounded w-fit">
-                        <i class="fas fa-paperclip"></i> <span class="text-xs">Ver arquivo anexado</span>
-                    </a>
+                <div class="md:col-span-2 overflow-y-auto custom-scrollbar p-8 bg-white">
+                    <div class="flex flex-wrap gap-4 mb-8">
+                        <div>
+                            <span class="block text-xs font-bold text-gray-500 uppercase mb-1">Status</span>
+                            <span id="det-status-badge" class="px-3 py-1 rounded bg-gray-200 text-gray-700 text-xs font-bold uppercase tracking-wide">Novo</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-gray-500 uppercase mb-1">Prioridade</span>
+                            <span id="det-prioridade-badge" class="px-3 py-1 rounded bg-orange-100 text-orange-700 text-xs font-bold uppercase tracking-wide">Média</span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-bold text-gray-500 uppercase mb-1">Solicitante</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-6 h-6 rounded-full bg-[#f97316] text-white flex items-center justify-center text-xs font-bold" id="det-avatar">?</div>
+                                <span id="det-solicitante" class="text-sm font-medium text-gray-700">Nome</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h4 class="flex items-center gap-2 text-sm font-bold text-gray-800 uppercase mb-3"><i class="fas fa-align-left text-gray-400"></i> Descrição</h4>
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm text-gray-700 whitespace-pre-line leading-relaxed" id="det-descricao">...</div>
+                    </div>
+
+                    <div id="det-anexo-area" class="hidden mb-8">
+                        <h4 class="flex items-center gap-2 text-sm font-bold text-gray-800 uppercase mb-3"><i class="fas fa-paperclip text-gray-400"></i> Anexos</h4>
+                        <a id="det-anexo-link" href="#" target="_blank" class="group flex items-center gap-4 bg-gray-50 border border-gray-200 rounded-lg p-3 hover:bg-gray-100 transition w-fit">
+                            <div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-gray-500 group-hover:text-[#f97316]"><i class="fas fa-file-image text-xl"></i></div>
+                            <div>
+                                <p class="text-sm font-bold text-gray-700 group-hover:underline">Visualizar Arquivo</p>
+                                <p class="text-xs text-gray-400">Clique para abrir</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="bg-[#f4f5f7] flex flex-col h-full overflow-hidden">
+                    <div class="p-4 bg-gray-100 border-b border-gray-200">
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Técnico Responsável</label>
+                        <select id="select-tecnico-responsavel" onchange="alterarTecnico(this.value)" class="w-full border border-gray-300 rounded-lg py-2 px-3 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#f97316]">
+                            <option value="">-- Sem Técnico --</option>
+                            </select>
+                    </div>
+
+                    <div class="p-4 border-b border-gray-200 bg-gray-50 grid grid-cols-2 gap-2">
+                        <button onclick="alterarStatus('ANDAMENTO')" class="flex items-center justify-center gap-2 bg-white hover:bg-blue-50 text-blue-600 border border-gray-200 py-1.5 rounded text-xs font-bold shadow-sm transition">
+                            <i class="fas fa-play"></i> Em Andamento
+                        </button>
+                        <button onclick="alterarStatus('RESOLVIDO')" class="flex items-center justify-center gap-2 bg-white hover:bg-green-50 text-green-600 border border-gray-200 py-1.5 rounded text-xs font-bold shadow-sm transition">
+                            <i class="fas fa-check"></i> Resolver
+                        </button>
+                    </div>
+
+                    <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4" id="lista-mensagens"></div>
+
+                    <div class="p-4 bg-white border-t border-gray-200">
+                        <form onsubmit="enviarMensagem(event)" class="relative">
+                            <input type="hidden" id="chat-chamado-id">
+                            <textarea id="chat-texto" rows="3" required placeholder="Escreva um comentário..." class="w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316] resize-none custom-scrollbar mb-2"></textarea>
+                            <div class="flex justify-between items-center">
+                                <span class="text-[10px] text-gray-400">Pressione Enviar</span>
+                                <button type="submit" class="bg-[#f97316] hover:bg-orange-600 text-white px-4 py-1.5 rounded text-xs font-bold shadow-sm transition">Enviar</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <div class="border-t border-gray-200 my-4"></div>
-            <div id="lista-mensagens" class="space-y-4"></div>
-        </div>
-        <div class="p-4 bg-white border-t border-gray-200">
-            <form onsubmit="enviarMensagem(event)" class="relative">
-                <input type="hidden" id="chat-chamado-id">
-                <div class="flex gap-2">
-                    <textarea id="chat-texto" rows="2" required placeholder="Escreva uma resposta..." class="flex-1 border border-gray-300 rounded-lg py-2 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316] resize-none custom-scrollbar"></textarea>
-                    <button type="submit" class="bg-[#f97316] hover:bg-orange-600 text-white px-4 rounded-lg font-bold shadow-sm transition"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
@@ -126,8 +168,11 @@
         'RESOLVIDO': { titulo: 'Resolvidos', corDot: 'bg-green-500' }
     };
     const CURRENT_USER_ID = {{ user.id }};
+    let LISTA_TECNICOS = []; // Armazena cache de técnicos
 
-    async function carregarPostos() {
+    // --- CARGAS INICIAIS ---
+    async function carregarDadosIniciais() {
+        // Carrega Postos
         try {
             const res = await fetch('/api/core/postos/');
             const postos = await res.json();
@@ -135,13 +180,23 @@
             select.innerHTML = '';
             postos.forEach(p => select.innerHTML += `<option value="${p.id}">${p.nome}</option>`);
         } catch(e) {}
+
+        // Carrega Técnicos (Para o Select)
+        try {
+            const res = await fetch('/api/core/funcionarios/');
+            const funcionarios = await res.json();
+            // Filtra quem é de TI ou tem cargo Técnico (Adapte conforme sua regra de negócio)
+            // Aqui estou pegando todos para garantir que apareça, mas o ideal é filtrar: f.setor === 'TI'
+            LISTA_TECNICOS = funcionarios; 
+        } catch(e) {}
     }
 
-    // --- KANBAN COM DRAG & DROP ---
+    // --- KANBAN COM DESIGN DINÂMICO ---
     async function carregarKanban() {
         const container = document.getElementById('kanban-ti');
         try {
-            const response = await fetch('/api/ti/chamados/');
+            const timestamp = new Date().getTime();
+            const response = await fetch(`/api/ti/chamados/?_t=${timestamp}`);
             const chamados = await response.json();
             
             container.innerHTML = '';
@@ -156,7 +211,6 @@
                 const lista = grupos[key];
                 const col = document.createElement('div');
                 col.className = "w-80 flex-shrink-0 flex flex-col max-h-full bg-gray-100/80 rounded-xl px-2 pb-2";
-                
                 col.innerHTML = `
                     <div class="p-3 flex justify-between items-center sticky top-0 bg-transparent z-10">
                         <div class="flex items-center gap-2">
@@ -167,65 +221,106 @@
                     </div>
                 `;
 
-                // Container dos Cards (onde o Sortable vai agir)
                 const cardList = document.createElement('div');
-                // IMPORTANTE: data-status na coluna para sabermos para onde foi solto
                 cardList.setAttribute('data-status', key);
                 cardList.className = "space-y-3 overflow-y-auto custom-scrollbar flex-1 px-1 min-h-[50px] kanban-coluna";
 
                 lista.forEach(ticket => {
+                    // 1. DEFINIÇÃO DE ESTILOS DINÂMICOS (GRADIENTES)
+                    let cardStyle = "bg-white border-gray-200"; // Padrão
+                    let titleColor = "text-gray-800";
+                    let subTextColor = "text-gray-500";
+                    let iconColor = "text-gray-300";
+                    let badgeBorder = "border"; // Borda padrão das badges
+
+                    // Lógica de Cores por Status
+                    if (ticket.status === 'RESOLVIDO') {
+                        // Gradiente Verde Forte (Texto Branco)
+                        cardStyle = "bg-gradient-to-br from-green-500 to-emerald-600 border-transparent shadow-green-200";
+                        titleColor = "text-white";
+                        subTextColor = "text-green-100";
+                        iconColor = "text-green-200";
+                        badgeBorder = "border-transparent bg-white/20 text-white backdrop-blur-sm"; // Badge transparente
+                    } 
+                    else if (ticket.status === 'ANDAMENTO') {
+                        // Gradiente Laranja Suave
+                        cardStyle = "bg-gradient-to-br from-white to-orange-50 border-orange-100 shadow-sm";
+                    }
+                    else if (ticket.status === 'AGUARDANDO') {
+                        // Gradiente Amarelo Suave
+                        cardStyle = "bg-gradient-to-br from-white to-yellow-50 border-yellow-100 shadow-sm";
+                    }
+                    else {
+                        // Novo (Branco com leve toque azul)
+                        cardStyle = "bg-gradient-to-b from-white to-blue-50/30 border-gray-200";
+                    }
+
+                    // Lógica de Badge de Prioridade (Ajustada para o fundo verde)
                     let badgeClass = 'bg-gray-100 text-gray-600';
                     let badgeText = 'Normal';
-                    if(ticket.prioridade == '3') { badgeClass = 'bg-red-100 text-red-600 border-red-200'; badgeText = 'Alta'; }
-                    if(ticket.prioridade == '2') { badgeClass = 'bg-orange-100 text-orange-600 border-orange-200'; badgeText = 'Média'; }
-                    if(ticket.prioridade == '1') { badgeClass = 'bg-blue-100 text-blue-600 border-blue-200'; badgeText = 'Baixa'; }
+                    
+                    if (ticket.status === 'RESOLVIDO') {
+                        // Badges especiais para fundo verde
+                        if(String(ticket.prioridade) === '3') { badgeClass = 'bg-red-500 text-white shadow-sm'; badgeText = 'Alta'; }
+                        else if(String(ticket.prioridade) === '2') { badgeClass = 'bg-white/90 text-orange-600 shadow-sm'; badgeText = 'Média'; }
+                        else { badgeClass = 'bg-white/20 text-white backdrop-blur'; badgeText = 'Baixa'; }
+                    } else {
+                        // Badges normais
+                        if(String(ticket.prioridade) === '3') { badgeClass = 'bg-red-100 text-red-600 border-red-200'; badgeText = 'Alta'; }
+                        if(String(ticket.prioridade) === '2') { badgeClass = 'bg-orange-100 text-orange-600 border-orange-200'; badgeText = 'Média'; }
+                        if(String(ticket.prioridade) === '1') { badgeClass = 'bg-blue-100 text-blue-600 border-blue-200'; badgeText = 'Baixa'; }
+                    }
+
+                    // Avatar do Técnico
+                    let tecnicoAvatar = '';
+                    if (ticket.tecnico_nome) {
+                        // Se estiver resolvido, borda branca no avatar para destaque
+                        const borderColor = ticket.status === 'RESOLVIDO' ? 'border-white/50 text-emerald-700 bg-white' : 'border-white bg-slate-700 text-white';
+                        tecnicoAvatar = `
+                            <div class="absolute bottom-3 right-3" title="Técnico: ${ticket.tecnico_nome}">
+                                <div class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold border-2 shadow-sm ${borderColor}">
+                                    ${ticket.tecnico_nome.charAt(0)}
+                                </div>
+                            </div>
+                        `;
+                    }
 
                     const card = document.createElement('div');
-                    // data-id no card para sabermos qual ticket mover
                     card.setAttribute('data-id', ticket.id);
-                    card.className = "bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all cursor-grab active:cursor-grabbing group relative";
+                    // Aplica as classes dinâmicas
+                    card.className = `${cardStyle} p-4 rounded-xl border hover:shadow-md transition-all duration-300 cursor-grab active:cursor-grabbing group relative transform hover:-translate-y-0.5`;
+                    
                     card.innerHTML = `
                         <div class="flex justify-between items-start mb-2 pointer-events-none">
                             <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wide border ${badgeClass}">${badgeText}</span>
-                            <span class="text-[10px] font-mono text-gray-400">#${ticket.id}</span>
-                        </div>
-                        <h4 class="text-sm font-bold text-gray-800 leading-snug mb-1 pointer-events-none">${ticket.titulo}</h4>
-                        <div class="flex items-center gap-1 mb-3 pointer-events-none">
-                            <i class="fas fa-map-marker-alt text-gray-300 text-xs"></i>
-                            <p class="text-xs text-gray-500 truncate">${ticket.posto_nome}</p>
+                            <span class="text-[10px] font-mono ${subTextColor} opacity-80">#${ticket.id}</span>
                         </div>
                         
+                        <h4 class="text-sm font-bold ${titleColor} leading-snug mb-1 pointer-events-none pr-4 drop-shadow-sm">${ticket.titulo}</h4>
+                        
+                        <div class="flex items-center gap-1 mb-3 pointer-events-none">
+                            <i class="fas fa-map-marker-alt ${iconColor} text-xs"></i>
+                            <p class="text-xs ${subTextColor} truncate font-medium">${ticket.posto_nome || 'Sem Unidade'}</p>
+                        </div>
+                        
+                        ${tecnicoAvatar}
+                        
+                        ${ticket.status === 'RESOLVIDO' ? '<div class="absolute top-2 right-2 text-white/20 text-4xl"><i class="fas fa-check-circle"></i></div>' : ''}
+
                         <div onclick="abrirDetalhes(${ticket.id})" class="absolute inset-0 z-10 cursor-pointer opacity-0" title="Ver Detalhes"></div>
                     `;
                     cardList.appendChild(card);
                 });
-
                 col.appendChild(cardList);
                 container.appendChild(col);
 
-                // --- INICIALIZA O SORTABLE JS PARA ESTA COLUNA ---
                 new Sortable(cardList, {
-                    group: 'kanban-ti', // Permite mover entre listas
-                    animation: 150,
-                    ghostClass: 'bg-orange-50', // Classe do "fantasma" enquanto arrasta
-                    delay: 100, // Pequeno delay para evitar clique acidental em mobile
-                    delayOnTouchOnly: true,
+                    group: 'kanban-ti', animation: 150, ghostClass: 'opacity-50',
                     onEnd: function (evt) {
-                        const itemEl = evt.item;  // O card arrastado
-                        const novaColuna = evt.to; // A coluna onde soltou
-                        
-                        // Pega os dados dos atributos HTML
-                        const ticketId = itemEl.getAttribute('data-id');
-                        const novoStatus = novaColuna.getAttribute('data-status');
-                        const statusAntigo = evt.from.getAttribute('data-status');
-
-                        // Se mudou de coluna, chama a API
-                        if (novoStatus !== statusAntigo) {
-                            atualizarStatusViaDrag(ticketId, novoStatus);
-                            
-                            // Atualiza contadores visuais
-                            evt.from.parentElement.querySelector('.contador-cards').innerText = evt.from.children.length;
-                            novaColuna.parentElement.querySelector('.contador-cards').innerText = novaColuna.children.length;
+                        const ticketId = evt.item.getAttribute('data-id');
+                        const novoStatus = evt.to.getAttribute('data-status');
+                        if (novoStatus !== evt.from.getAttribute('data-status')) {
+                            atualizarStatus(ticketId, { status: novoStatus });
                         }
                     }
                 });
@@ -233,147 +328,156 @@
         } catch (error) { console.error(error); }
     }
 
-    // Função que chama a API quando solta o card
-    async function atualizarStatusViaDrag(id, novoStatus) {
-        try {
-            const res = await fetch(`/api/ti/chamados/${id}/`, {
-                method: 'PATCH',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ status: novoStatus })
-            });
-
-            if(!res.ok) {
-                alert('Erro ao atualizar status. A página será recarregada.');
-                window.location.reload();
-            }
-        } catch(e) { console.error(e); }
-    }
-
-    // --- FUNÇÕES DE DETALHES ---
+    // --- AÇÕES DO MODAL ---
     async function abrirDetalhes(id) {
-        const modal = document.getElementById('modal-detalhes');
-        const painel = document.getElementById('painel-detalhes');
-        const containerMsgs = document.getElementById('lista-mensagens');
-        
-        containerMsgs.innerHTML = '<div class="text-center py-4"><i class="fas fa-spinner fa-spin text-gray-400"></i></div>';
-        document.getElementById('chat-texto').value = '';
         document.getElementById('chat-chamado-id').value = id;
-        
-        modal.classList.remove('hidden');
-        setTimeout(() => painel.classList.remove('translate-x-full'), 10);
+        document.getElementById('modal-detalhes').classList.remove('hidden');
+        const containerMsgs = document.getElementById('lista-mensagens');
+        containerMsgs.innerHTML = '<div class="text-center py-10"><i class="fas fa-spinner fa-spin text-gray-400"></i></div>';
 
         try {
             const res = await fetch(`/api/ti/chamados/${id}/`);
             const ticket = await res.json();
 
+            // Preenche dados básicos
             document.getElementById('det-id').innerText = `#${ticket.id}`;
             document.getElementById('det-titulo').innerText = ticket.titulo;
-            document.getElementById('det-info').innerText = `${new Date(ticket.criado_em).toLocaleString()} - ${ticket.posto_nome}`;
+            document.getElementById('det-posto').innerText = ticket.posto_nome || 'Sem Unidade';
+            document.getElementById('det-solicitante').innerText = ticket.solicitante_nome;
+            document.getElementById('det-avatar').innerText = ticket.solicitante_nome ? ticket.solicitante_nome.charAt(0) : '?';
             document.getElementById('det-descricao').innerText = ticket.descricao;
-            document.getElementById('det-status').innerText = ticket.status;
+            document.getElementById('det-status-badge').innerText = ticket.status;
+            
+            // Popula Select de Técnicos
+            const selectTec = document.getElementById('select-tecnico-responsavel');
+            selectTec.innerHTML = '<option value="">-- Sem Técnico --</option>';
+            LISTA_TECNICOS.forEach(t => {
+                const selected = t.id == ticket.tecnico ? 'selected' : '';
+                selectTec.innerHTML += `<option value="${t.id}" ${selected}>${t.first_name} ${t.last_name || ''}</option>`;
+            });
 
-            // Exibir anexo se existir
+            // Anexo
             const areaAnexo = document.getElementById('det-anexo-area');
-            const linkAnexo = document.getElementById('det-anexo-link');
             if (ticket.arquivo) {
                 areaAnexo.classList.remove('hidden');
-                linkAnexo.href = ticket.arquivo; // URL do arquivo
-            } else {
-                areaAnexo.classList.add('hidden');
-            }
+                document.getElementById('det-anexo-link').href = ticket.arquivo;
+            } else { areaAnexo.classList.add('hidden'); }
 
-            containerMsgs.innerHTML = '';
-            if (ticket.acompanhamentos && ticket.acompanhamentos.length > 0) {
-                ticket.acompanhamentos.forEach(msg => {
-                    const isMe = msg.autor === CURRENT_USER_ID;
-                    const htmlMsg = `
-                        <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'}">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-xs font-bold text-gray-600">${msg.autor_nome}</span>
-                                <span class="text-[10px] text-gray-400">${new Date(msg.criado_em).toLocaleString()}</span>
-                            </div>
-                            <div class="${isMe ? 'bg-blue-100 text-blue-900 rounded-tl-xl rounded-tr-xl rounded-bl-xl' : 'bg-white border border-gray-200 text-gray-800 rounded-tr-xl rounded-br-xl rounded-bl-xl'} px-4 py-2 shadow-sm text-sm max-w-[85%]">
-                                ${msg.texto}
-                            </div>
-                        </div>
-                    `;
-                    containerMsgs.innerHTML += htmlMsg;
-                });
-            } else {
-                containerMsgs.innerHTML = '<p class="text-center text-xs text-gray-400 my-4">Nenhuma mensagem.</p>';
-            }
-            const scrollArea = document.getElementById('chat-container');
-            scrollArea.scrollTop = scrollArea.scrollHeight;
+            // Chat
+            carregarChat(ticket);
 
         } catch (e) { console.error(e); }
     }
 
-    async function criarChamado(e) {
-        e.preventDefault();
-        const form = document.getElementById('form-chamado');
-        const formData = new FormData(form); // FormData já lida com arquivos automaticamente
-        
-        const csrfToken = getCookie('csrftoken');
-        try {
-            // Nota: Ao usar FormData e fetch, NÃO defina Content-Type no header. 
-            // O navegador define automaticamente multipart/form-data com o boundary correto.
-            const res = await fetch('/api/ti/chamados/', {
-                method: 'POST',
-                headers: { 'X-CSRFToken': csrfToken }, 
-                body: formData
+    function carregarChat(ticket) {
+        const containerMsgs = document.getElementById('lista-mensagens');
+        containerMsgs.innerHTML = '';
+        if (ticket.acompanhamentos && ticket.acompanhamentos.length > 0) {
+            ticket.acompanhamentos.forEach(msg => {
+                const isMe = msg.autor === CURRENT_USER_ID;
+                const htmlMsg = `
+                    <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} mb-3">
+                        <div class="flex items-end gap-2 max-w-[90%]">
+                            ${!isMe ? '<div class="w-6 h-6 rounded-full bg-gray-300 text-[10px] flex items-center justify-center font-bold text-gray-600 mb-1">'+(msg.autor_nome ? msg.autor_nome.charAt(0) : '?')+'</div>' : ''}
+                            <div class="${isMe ? 'bg-blue-100 text-blue-900 rounded-2xl rounded-tr-none' : 'bg-white border border-gray-200 text-gray-800 rounded-2xl rounded-tl-none'} px-4 py-2 shadow-sm text-sm">
+                                <p>${msg.texto}</p>
+                                <p class="text-[10px] opacity-60 mt-1 text-right">${new Date(msg.criado_em).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                containerMsgs.innerHTML += htmlMsg;
             });
-            if (res.ok) {
-                fecharModalChamado();
-                form.reset();
-                carregarKanban();
-            } else { 
-                const erro = await res.json();
-                alert('Erro: ' + JSON.stringify(erro)); 
-            }
-        } catch (e) { alert('Erro de conexão'); }
+            containerMsgs.scrollTop = containerMsgs.scrollHeight;
+        } else {
+            containerMsgs.innerHTML = '<div class="text-center text-gray-400 text-xs mt-10">Nenhum comentário.</div>';
+        }
     }
 
-    // ... Manter funções auxiliares (enviarMensagem, fecharDetalhes, cookies) ...
     async function enviarMensagem(e) {
         e.preventDefault();
         const texto = document.getElementById('chat-texto').value;
         const chamadoId = document.getElementById('chat-chamado-id').value;
         if(!texto.trim()) return;
+
         try {
             const res = await fetch('/api/ti/acompanhamentos/', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
                 body: JSON.stringify({ chamado: chamadoId, texto: texto })
             });
-            if (res.ok) abrirDetalhes(chamadoId); 
+            if (res.ok) {
+                document.getElementById('chat-texto').value = '';
+                // Recarrega apenas o modal para atualizar o chat
+                const resTicket = await fetch(`/api/ti/chamados/${chamadoId}/`);
+                const ticket = await resTicket.json();
+                carregarChat(ticket);
+            } else {
+                console.error(await res.json());
+                alert('Erro ao enviar mensagem.');
+            }
         } catch (e) { console.error(e); }
     }
 
-    function fecharDetalhes() {
-        const painel = document.getElementById('painel-detalhes');
-        painel.classList.add('translate-x-full');
-        setTimeout(() => { document.getElementById('modal-detalhes').classList.add('hidden'); }, 300);
+    // --- FUNÇÕES DE UPDATE ---
+    async function alterarTecnico(tecnicoId) {
+        const id = document.getElementById('chat-chamado-id').value;
+        const payload = tecnicoId ? { tecnico: tecnicoId } : { tecnico: null };
+        await atualizarStatus(id, payload);
+        carregarKanban(); // Atualiza avatar no kanban
     }
+
+    async function alterarStatus(novoStatus) {
+        const id = document.getElementById('chat-chamado-id').value;
+        if(!confirm('Mudar status para ' + novoStatus + '?')) return;
+        
+        const payload = { status: novoStatus };
+        // Se for "Assumir" e não tiver técnico, atribui o usuário atual
+        if (novoStatus === 'ANDAMENTO') {
+            const selectTec = document.getElementById('select-tecnico-responsavel');
+            if(!selectTec.value) {
+                payload.tecnico = CURRENT_USER_ID;
+            }
+        }
+        await atualizarStatus(id, payload);
+        abrirDetalhes(id); // Recarrega modal
+        carregarKanban();
+    }
+
+    async function atualizarStatus(id, dados) {
+        try {
+            await fetch(`/api/ti/chamados/${id}/`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
+                body: JSON.stringify(dados)
+            });
+        } catch(e) { console.error(e); }
+    }
+
+    // ... (criarChamado, fecharDetalhes, abrirModalChamado, fecharModalChamado, getCookie iguais) ...
+    async function criarChamado(e) {
+        e.preventDefault();
+        const form = document.getElementById('form-chamado');
+        const formData = new FormData(form);
+        try {
+            const res = await fetch('/api/ti/chamados/', { method: 'POST', headers: { 'X-CSRFToken': getCookie('csrftoken') }, body: formData });
+            if (res.ok) { fecharModalChamado(); form.reset(); carregarKanban(); } else { alert('Erro ao criar.'); }
+        } catch (e) { alert('Erro de conexão.'); }
+    }
+    function fecharDetalhes() { document.getElementById('modal-detalhes').classList.add('hidden'); }
     function abrirModalChamado() { carregarPostos(); document.getElementById('modal-chamado').classList.remove('hidden'); }
     function fecharModalChamado() { document.getElementById('modal-chamado').classList.add('hidden'); }
     function getCookie(name) {
-        let cookieValue = null;
+        let v = null;
         if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+            document.cookie.split(';').forEach(c => {
+                if (c.trim().substring(0, name.length + 1) === (name + '=')) v = decodeURIComponent(c.trim().substring(name.length + 1));
+            });
         }
-        return cookieValue;
+        return v;
     }
 
+    carregarDadosIniciais();
     carregarKanban();
 </script>
 {% endblock %}

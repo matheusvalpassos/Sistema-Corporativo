@@ -25,13 +25,13 @@ class Posto(models.Model):
 class Funcionario(AbstractUser):
     # Setores (Horizontal)
     SETORES = (
-        ('DIR', 'Diretoria/CEO'),
-        ('COM', 'Comercial'),
+        ('DIRETOR', 'Diretoria/CEO'),
+        ('COMERCIAL', 'Comercial'),
         ('TI',  'Tecnologia da Informação'),
         ('RH',  'Recursos Humanos'),
-        ('MKT', 'Marketing'),
+        ('MARKETING', 'Marketing'),
         ('ADM', 'Administrativo'),
-        ('OPE', 'Operacional de Pista'), # Para frentistas
+        ('OPERACIONAL', 'Operacional de Pista'), # Para frentistas
     )
 
     # Cargos (Vertical - Define o nível de poder)
@@ -45,7 +45,7 @@ class Funcionario(AbstractUser):
         ('FRENT',     'Frentista'),
     )
 
-    setor = models.CharField(max_length=3, choices=SETORES, default='OPE')
+    setor = models.CharField(max_length=11, choices=SETORES, default='OPERACIONAL')
     cargo = models.CharField(max_length=10, choices=CARGOS, default='FRENT')
     
     # O Pulo do Gato: Vínculo com a Unidade

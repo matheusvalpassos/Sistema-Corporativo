@@ -20,30 +20,29 @@ class ChamadoViewSet(viewsets.ModelViewSet):
     filterset_fields = ['status', 'prioridade', 'posto']
 
     def perform_create(self, serializer):
-        # Define automaticamente o solicitante como o usuário logado
         serializer.save(solicitante=self.request.user)
 
     def get_queryset(self):
         user = self.request.user
-        # Se for do setor TI ou CEO, vê tudo
-        if user.setor == 'TI' or user.cargo == 'CEO':
+        
+        # 1. VISÃO TOTAL (Superusuário, TI ou CEO): Vê todos os chamados
+        if user.is_superuser or getattr(user, 'setor', '') == 'TI' or getattr(user, 'cargo', '') == 'CEO':
             return Chamado.objects.all().order_by('-criado_em')
         
-        # Se for gerente de posto, vê só os do posto dele
-        if user.posto_trabalho:
+        # 2. VISÃO GERENCIAL (Opcional: Gerente vê todos os chamados da sua unidade):
+        # Se for gerente, vê tudo do posto. Se for funcionário comum, vê só os dele.
+        if user.posto_trabalho and getattr(user, 'cargo', '') in ['GER_POSTO', 'GER_SETOR']:
             return Chamado.objects.filter(posto=user.posto_trabalho).order_by('-criado_em')
         
-        # Padrão: vê só os que ele mesmo abriu
+        # 3. VISÃO PADRÃO (Funcionário comum): Vê apenas os chamados que ELE abriu, independente do posto
         return Chamado.objects.filter(solicitante=user).order_by('-criado_em')
 
-    # Rota para Dashboard de TI
+
     @action(detail=False, methods=['get'])
     def dashboard(self, request):
-        # Totais gerais
+
         total_abertos = Chamado.objects.exclude(status__in=['RESOLVIDO', 'FECHADO']).count()
         ativos_manutencao = Ativo.objects.filter(status='MANUT').count()
-        
-        # Chamados por Prioridade (ex: Alta: 5, Média: 2)
         por_prioridade = Chamado.objects.exclude(status='FECHADO').values('prioridade').annotate(total=Count('id'))
         
         return Response({
@@ -62,9 +61,7 @@ class AcompanhamentoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filterset_fields = ['chamado']
     
-    # ADICIONE ISSO AQUI 👇
     def perform_create(self, serializer):
-        # Grava quem está enviando a mensagem (Técnico ou Usuário Comum)
         serializer.save(autor=self.request.user)
 
 class CategoriaAtivoViewSet(viewsets.ModelViewSet):

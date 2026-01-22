@@ -31,13 +31,15 @@ class PostoSerializer(serializers.ModelSerializer):
 class FuncionarioSerializer(serializers.ModelSerializer):
     posto_nome = serializers.ReadOnlyField(source='posto_trabalho.nome')
     cargo_display = serializers.CharField(source='get_cargo_display', read_only=True)
+    setor_display = serializers.CharField(source='get_setor_display', read_only=True)
 
     class Meta:
         model = Funcionario
-        # Ocultamos a senha e dados sensíveis na listagem padrão
         fields = [
             'id', 'username', 'first_name', 'last_name', 'email', 
-            'cargo', 'cargo_display', 'posto_trabalho', 'posto_nome', 
-            'matricula', 'telefone', 'is_active', 'data_admissao', 
-            'data_demissao', 'foto_perfil'
+            'cargo', 'cargo_display', 
+            'setor', 'setor_display',
+            'posto_trabalho', 'posto_nome', 
+            'matricula', 'cpf',
+            'telefone', 'is_active', 'data_admissao', 'data_demissao', 'foto_perfil'
         ]

@@ -19,7 +19,8 @@ class AcompanhamentoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Acompanhamento
-        fields = '__all__'
+        fields = ['id', 'chamado', 'autor', 'autor_nome', 'texto', 'criado_em']
+        read_only_fields = ['autor', 'criado_em']
 
 class ChamadoSerializer(serializers.ModelSerializer):
     solicitante_nome = serializers.ReadOnlyField(source='solicitante.first_name')
@@ -32,4 +33,4 @@ class ChamadoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Chamado
         fields = '__all__'
-        read_only_fields = ('solicitante', 'status', 'criado_em', 'atualizado_em', 'fechado_em', 'postotecnico')
+        read_only_fields = ['solicitante']

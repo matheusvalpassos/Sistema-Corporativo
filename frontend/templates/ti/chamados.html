@@ -258,6 +258,36 @@
                     // Lógica de Badge de Prioridade (Ajustada para o fundo verde)
                     let badgeClass = 'bg-gray-100 text-gray-600';
                     let badgeText = 'Normal';
+
+                    let tecnicoAvatar = '';
+                    if (ticket.tecnico_nome) {
+                        
+                        // Define o conteúdo: OU Imagem OU Inicial
+                        let avatarContent = '';
+                        let bgClass = 'bg-slate-700 text-white'; // Fundo padrão para inicial
+                        
+                        if (ticket.tecnico_foto) {
+                            // Se tem foto, usa a imagem
+                            avatarContent = `<img src="${ticket.tecnico_foto}" class="w-full h-full object-cover rounded-full">`;
+                            bgClass = 'bg-white'; // Fundo neutro atrás da foto
+                        } else {
+                            // Se não tem, usa a inicial
+                            avatarContent = ticket.tecnico_nome.charAt(0);
+                        }
+
+                        // Se estiver resolvido, borda branca no avatar para destaque
+                        const borderColor = ticket.status === 'RESOLVIDO' ? 'border-white/50' : 'border-white';
+                        
+                        tecnicoAvatar = `
+                            <div class="absolute bottom-3 right-3" title="Técnico: ${ticket.tecnico_nome}">
+                                <div class="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold border-2 shadow-sm overflow-hidden ${borderColor} ${bgClass}">
+                                    ${avatarContent}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    const card = document.createElement('div');
                     
                     if (ticket.status === 'RESOLVIDO') {
                         // Badges especiais para fundo verde

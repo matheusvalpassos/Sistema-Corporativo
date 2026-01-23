@@ -4,9 +4,11 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Count, Sum
 from .models import Funcionario, Posto, Bandeira
-from .serializers import FuncionarioSerializer, PostoSerializer
-from django.shortcuts import render
+from .serializers import FuncionarioSerializer, PostoSerializer, BandeiraSerializer
+from django.contrib import messages
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+
 
 class PostoViewSet(viewsets.ModelViewSet):
     queryset = Posto.objects.all()
@@ -43,6 +45,12 @@ class FuncionarioViewSet(viewsets.ModelViewSet):
             }
         })
         
+
+class BandeiraViewSet(viewsets.ModelViewSet):
+    queryset = Bandeira.objects.all()
+    serializer_class = BandeiraSerializer
+    permission_classes = [IsAuthenticated]        
+
 # Essa função apenas "pinta" o HTML na tela
 @login_required(login_url='/admin/login/') # Se não estiver logado, manda pro login do Admin por enquanto
 def home(request):
@@ -69,7 +77,43 @@ def lista_postos(request):
 def perfil_usuario(request):
     return render(request, 'perfil.html')
 
+#Aqui é responsável pelo redirecionamento do Login.
 def home(request):
     if not request.user.is_authenticated:
-        return render(request, 'landing.html') # <--- Cai aqui se não tiver logado
-    return render(request, 'index.html') # <--- Cai aqui se tiver logado
+        return render(request, 'landing.html') # <-- Se não estiver logado, mostra a landing page
+    return render(request, 'index.html') # <-- Se estiver logado, mostra o dashboard
+
+@login_required
+def perfil_usuario(request):
+    if request.method == 'POST':
+        user = request.user
+        
+        # 1. Atualizar Foto
+        if 'foto_perfil' in request.FILES:
+            user.foto_perfil = request.FILES['foto_perfil']
+        
+        # 2. Atualizar Senha (se preenchida)
+        nova_senha = request.POST.get('password')
+        confirma_senha = request.POST.get('confirm_password')
+        
+        if nova_senha and confirma_senha:
+            if nova_senha == confirma_senha:
+                user.set_password(nova_senha)
+                # Mantém o usuário logado após mudar senha
+                from django.contrib.auth import update_session_auth_hash
+                update_session_auth_hash(request, user)
+                messages.success(request, "Senha alterada com sucesso!")
+            else:
+                messages.error(request, "As senhas não conferem.")
+                return render(request, 'perfil.html')
+
+        # 3. Salvar
+        try:
+            user.save()
+            messages.success(request, "Perfil atualizado!")
+        except Exception as e:
+            messages.error(request, "Erro ao salvar perfil.")
+            
+        return redirect('perfil')
+
+    return render(request, 'perfil.html')

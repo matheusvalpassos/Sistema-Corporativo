@@ -41,7 +41,7 @@
     <aside class="w-72 bg-white border-r border-slate-200 hidden md:flex flex-col z-30 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
         
         <div class="h-20 flex items-center px-8 border-b border-slate-50">
-            <img src="{% static 'images/logo-rede-bellas2.png' %}" alt="Rede Bellas" class="h-10 w-auto object-contain">
+            <img src="{% static 'images/SeuLogo2.png' %}" alt="Rede Bellas" class="h-10 w-auto object-contain">
         </div>
         
         <nav class="flex-1 overflow-y-auto py-6 px-4 custom-scrollbar space-y-8">
@@ -83,6 +83,12 @@
                         <a href="{% url 'ti_chamados' %}" class="flex items-center px-4 py-3 rounded-xl group transition-all duration-200 {% if '/ti/' in request.path %}bg-red-50 text-[#b91c1c]{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
                             <i class="fas fa-headset w-6 {% if '/ti/' in request.path %}text-[#b91c1c]{% else %}text-slate-400 group-hover:text-[#f97316]{% endif %} transition-colors"></i>
                             <span class="font-medium text-sm">Helpdesk TI</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'ti_ativos' %}" class="flex items-center px-4 py-3 rounded-xl group transition-all duration-200 {% if '/ti/ativos/' in request.path %}bg-red-50 text-[#b91c1c]{% else %}text-slate-600 hover:bg-slate-50 hover:text-slate-900{% endif %}">
+                            <i class="fas fa-desktop w-6 {% if '/ti/ativos/' in request.path %}text-[#b91c1c]{% else %}text-slate-400 group-hover:text-[#f97316]{% endif %} transition-colors"></i>
+                            <span class="font-medium text-sm">Inventário</span>
                         </a>
                     </li>
                 </ul>

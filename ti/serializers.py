@@ -26,6 +26,7 @@ class ChamadoSerializer(serializers.ModelSerializer):
     solicitante_nome = serializers.ReadOnlyField(source='solicitante.first_name')
     posto_nome = serializers.ReadOnlyField(source='posto.nome')
     tecnico_nome = serializers.ReadOnlyField(source='tecnico.first_name')
+    tecnico_foto = serializers.SerializerMethodField()
     
     # Traz as últimas interações junto (opcional, facilita o front)
     acompanhamentos = AcompanhamentoSerializer(many=True, read_only=True)
@@ -34,3 +35,8 @@ class ChamadoSerializer(serializers.ModelSerializer):
         model = Chamado
         fields = '__all__'
         read_only_fields = ['solicitante']
+    
+    def get_tecnico_foto(self, obj):
+        if obj.tecnico and obj.tecnico.foto_perfil:
+            return obj.tecnico.foto_perfil.url
+        return None

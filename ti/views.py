@@ -75,3 +75,8 @@ class CategoriaAtivoViewSet(viewsets.ModelViewSet):
 @login_required(login_url='login')
 def quadro_chamados(request):
     return render(request, 'ti/chamados.html')
+
+# View para renderizar o HTML dos Ativos
+@login_required(login_url='login')
+def inventario_ativos(request):
+    return render(request, 'ti/ativos.html')

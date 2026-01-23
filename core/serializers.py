@@ -43,3 +43,8 @@ class FuncionarioSerializer(serializers.ModelSerializer):
             'matricula', 'cpf',
             'telefone', 'is_active', 'data_admissao', 'data_demissao', 'foto_perfil'
         ]
+        
+class BandeiraSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Bandeira
+        fields = '__all__'

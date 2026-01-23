@@ -3,169 +3,161 @@
 {% block title %}Unidades - Rede Bellas{% endblock %}
 
 {% block content %}
-<div class="flex flex-col h-full bg-gray-50">
+<div class="p-8 min-h-screen bg-slate-50">
     
-    <div class="bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center shadow-sm flex-shrink-0 sticky top-0 z-20">
-        <div class="flex items-center gap-4">
-            <div class="p-2 bg-orange-50 rounded-lg">
-                <i class="fas fa-building text-[#f97316] text-xl"></i>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold text-gray-800 tracking-tight">Unidades e Postos</h1>
-                <p class="text-xs text-gray-500 font-medium">Gestão da rede física</p>
-            </div>
+    <div class="flex justify-between items-center mb-10">
+        <div>
+            <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Unidades & Postos</h1>
+            <p class="text-slate-500 mt-1">Gerencie a rede física e visualize a lotação das equipes.</p>
         </div>
-        
-        <button onclick="abrirModal()" class="bg-[#f97316] hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg shadow-sm hover:shadow transition flex items-center gap-2 font-bold text-sm tracking-wide transform active:scale-95">
+        <button onclick="abrirModalPosto()" class="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 px-5 py-2.5 rounded-xl shadow-sm hover:border-[#b91c1c] hover:text-[#b91c1c] transition flex items-center gap-2 font-bold text-sm">
             <i class="fas fa-plus"></i> Nova Unidade
         </button>
     </div>
 
-    <div id="grid-postos" class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 overflow-y-auto custom-scrollbar">
-        <div class="col-span-full text-center py-10">
-            <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-[#f97316] mx-auto"></div>
-            <p class="text-gray-500 mt-4">Carregando unidades...</p>
-        </div>
+    <div id="loader-postos" class="flex flex-col items-center justify-center py-20">
+        <div class="w-12 h-12 border-4 border-slate-200 border-t-[#b91c1c] rounded-full animate-spin mb-4"></div>
+        <p class="text-slate-400">Carregando rede...</p>
     </div>
+
+    <div id="grid-postos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden opacity-0 transition-opacity duration-500">
+        </div>
+
 </div>
 
-<div id="modal-novo" class="fixed inset-0 bg-gray-900 bg-opacity-40 hidden z-50 flex justify-center items-center backdrop-blur-sm transition-opacity">
-    <div class="relative bg-white w-full max-w-lg rounded-xl shadow-2xl flex flex-col max-h-[90vh]">
+<div id="modal-posto" class="fixed inset-0 bg-gray-900/60 hidden z-50 flex justify-center items-center backdrop-blur-sm transition-opacity">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl overflow-hidden transform transition-all scale-100">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+            <h3 class="text-lg font-bold text-gray-800" id="modal-titulo">Nova Unidade</h3>
+            <button onclick="fecharModalPosto()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
+        </div>
         
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
+        <form id="form-posto" onsubmit="salvarPosto(event)" class="p-6 space-y-4">
+            <input type="hidden" name="id" id="posto-id">
+            
             <div>
-                <h3 class="text-lg font-bold text-gray-800">Nova Unidade</h3>
-                <p class="text-xs text-gray-500">Cadastrar novo posto na rede</p>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nome Fantasia</label>
+                <input type="text" name="nome" required class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#b91c1c]/20 focus:border-[#b91c1c]" placeholder="Ex: Posto Vértice">
             </div>
-            <button onclick="fecharModal()" class="text-gray-400 hover:text-red-500 transition w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-50">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <div class="p-6 overflow-y-auto custom-scrollbar">
-            <form id="form-posto" onsubmit="salvarPosto(event)" class="space-y-4">
-                
-                <div class="group">
-                    <label class="block text-gray-700 text-xs font-bold uppercase tracking-wider mb-2">Nome da Unidade</label>
-                    <input type="text" name="nome" required placeholder="Ex: Posto Centro" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] bg-gray-50 focus:bg-white transition-all">
-                </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="group">
-                        <label class="block text-gray-700 text-xs font-bold uppercase tracking-wider mb-2">CNPJ</label>
-                        <input type="text" name="cnpj" required placeholder="00.000.000/0001-00" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] bg-gray-50 focus:bg-white transition-all">
-                    </div>
-                    
-                    <div class="group">
-                        <label class="block text-gray-700 text-xs font-bold uppercase tracking-wider mb-2">Bandeira</label>
-                        <select name="bandeira" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] bg-gray-50 focus:bg-white transition-all">
-                            {% for b in opcoes_bandeiras %}
-                                <option value="{{ b.id }}">{{ b.nome }}</option>
-                            {% endfor %}
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Cidade</label>
+                    <input type="text" name="cidade" required class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#b91c1c]/20 focus:border-[#b91c1c]" placeholder="Saquarema">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Bandeira</label>
+                    <select name="bandeira" id="select-bandeira" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#b91c1c]/20 focus:border-[#b91c1c]">
                         </select>
-                    </div>
                 </div>
+            </div>
 
-                <div class="group">
-                    <label class="block text-gray-700 text-xs font-bold uppercase tracking-wider mb-2">Endereço</label>
-                    <input type="text" name="endereco" placeholder="Rua, Número, Bairro" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] bg-gray-50 focus:bg-white transition-all">
-                </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Endereço / Referência</label>
+                <input type="text" name="endereco" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#b91c1c]/20 focus:border-[#b91c1c]" placeholder="Rod. Amaral Peixoto, Km 70">
+            </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="group">
-                        <label class="block text-gray-700 text-xs font-bold uppercase tracking-wider mb-2">Cidade</label>
-                        <input type="text" name="cidade" required class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] bg-gray-50 focus:bg-white transition-all">
-                    </div>
-                    <div class="group">
-                        <label class="block text-gray-700 text-xs font-bold uppercase tracking-wider mb-2" title="Meta de funcionários">Quadro Ideal</label>
-                        <input type="number" name="quadro_ideal" value="10" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]/20 focus:border-[#f97316] bg-gray-50 focus:bg-white transition-all">
-                    </div>
-                </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">CNPJ</label>
+                <input type="text" name="cnpj" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#b91c1c]/20 focus:border-[#b91c1c]" placeholder="00.000.000/0000-00">
+            </div>
 
-            </form>
-        </div>
-
-        <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-xl flex justify-end gap-3">
-            <button type="button" onclick="fecharModal()" class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium text-sm transition">Cancelar</button>
-            <button type="submit" form="form-posto" class="px-5 py-2.5 bg-[#f97316] text-white rounded-lg hover:bg-orange-600 font-bold text-sm shadow-md transition transform hover:-translate-y-0.5">Salvar Unidade</button>
-        </div>
+            <div class="pt-4 flex justify-end gap-3">
+                <button type="button" onclick="fecharModalPosto()" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-50 font-medium">Cancelar</button>
+                <button type="submit" class="px-6 py-2 bg-[#b91c1c] text-white rounded-lg font-bold text-sm shadow-md hover:bg-[#991b1b] transition">Salvar Unidade</button>
+            </div>
+        </form>
     </div>
 </div>
 
 <script>
+    // Cache de Bandeiras para evitar muitas requisições
+    let CACHE_BANDEIRAS = [];
+
     async function carregarPostos() {
         const grid = document.getElementById('grid-postos');
+        const loader = document.getElementById('loader-postos');
+
         try {
-            const res = await fetch('/api/core/postos/');
-            const postos = await res.json();
+            // Carrega Postos e Bandeiras em paralelo
+            const [resPostos, resBandeiras] = await Promise.all([
+                fetch('/api/core/postos/'),
+                fetch('/api/core/bandeiras/')
+            ]);
             
+            const postos = await resPostos.json();
+            CACHE_BANDEIRAS = await resBandeiras.json();
+
             grid.innerHTML = '';
-            
-            if (postos.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center text-gray-400 p-10">Nenhuma unidade cadastrada.</div>`;
-                return;
-            }
 
             postos.forEach(posto => {
-                const total = posto.total_funcionarios || 0;
-                const ideal = posto.quadro_ideal || 10;
-                const porcentagem = Math.min((total / ideal) * 100, 100);
+                // Identifica o estilo baseado no nome da bandeira (lógica visual)
+                const nomeBandeira = posto.bandeira_nome ? posto.bandeira_nome.toUpperCase() : 'OUTRA';
+                let estilo = getEstiloBandeira(nomeBandeira);
+
+                const card = document.createElement('div');
+                card.className = "bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-col";
                 
-                let corBarra = 'bg-green-500';
-                if (porcentagem < 50) corBarra = 'bg-red-500';
-                else if (porcentagem < 80) corBarra = 'bg-yellow-500';
-
-                // Lógica de Cores baseada no NOME da bandeira (Vem do Serializer)
-                let corBandeira = 'bg-gray-100 text-gray-500';
-                const nomeBandeira = posto.bandeira_nome || ''; // Previni erro se for null
-
-                if (nomeBandeira.includes('Shell')) corBandeira = 'bg-yellow-100 text-yellow-600';
-                else if (nomeBandeira.includes('Ipiranga')) corBandeira = 'bg-blue-100 text-blue-600';
-                else if (nomeBandeira.includes('Vibra')) corBandeira = 'bg-green-100 text-green-600';
-                else if (nomeBandeira.includes('Ale')) corBandeira = 'bg-red-100 text-red-600';
-
-                grid.innerHTML += `
-                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all group relative overflow-hidden">
-                        
-                        <div class="p-5">
-                            <div class="flex justify-between items-start mb-4">
-                                <div class="w-12 h-12 rounded-lg ${corBandeira} flex items-center justify-center text-2xl shadow-sm">
-                                    <i class="fas fa-gas-pump"></i>
-                                </div>
-                                <button class="text-gray-300 hover:text-[#f97316] transition">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </button>
-                            </div>
-
-                            <h3 class="font-bold text-lg text-gray-800 mb-1 group-hover:text-[#f97316] transition-colors">${posto.nome}</h3>
-                            <p class="text-xs text-gray-500 flex items-center gap-1 mb-4">
-                                <i class="fas fa-map-marker-alt"></i> ${posto.cidade}
-                            </p>
-
-                            <div class="space-y-3">
-                                <div class="flex justify-between text-xs text-gray-600">
-                                    <span>Equipe Atual</span>
-                                    <span class="font-bold">${total} / ${ideal}</span>
-                                </div>
-                                <div class="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                                    <div class="${corBarra} h-1.5 rounded-full" style="width: ${porcentagem}%"></div>
-                                </div>
-                            </div>
+                card.innerHTML = `
+                    <div class="h-24 ${estilo.bg} relative flex items-center justify-center overflow-hidden">
+                        <div class="absolute inset-0 bg-black/10"></div>
+                        <div class="relative z-10 w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg text-xl">
+                            ${estilo.icon}
                         </div>
-
-                        <div class="bg-gray-50 px-5 py-3 border-t border-gray-100 flex justify-between items-center">
-                            <span class="text-[10px] text-gray-400 font-mono">${posto.cnpj}</span>
-                            <span class="text-[10px] font-bold text-gray-500 uppercase">${nomeBandeira}</span>
+                        <button onclick="editarPosto(${posto.id})" class="absolute top-3 right-3 bg-white/20 hover:bg-white text-white hover:text-slate-800 p-2 rounded-lg backdrop-blur-sm transition opacity-0 group-hover:opacity-100">
+                            <i class="fas fa-pencil-alt text-xs"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="p-6 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] font-bold tracking-widest uppercase ${estilo.text}">${posto.bandeira_nome || 'Bandeira Branca'}</span>
+                            ${posto.cnpj ? `<span class="text-[10px] text-slate-400 font-mono" title="${posto.cnpj}">CNPJ OK</span>` : ''}
+                        </div>
+                        
+                        <h3 class="text-xl font-bold text-slate-800 leading-tight mb-1">${posto.nome}</h3>
+                        <p class="text-sm text-slate-500 mb-4 flex items-center gap-1">
+                            <i class="fas fa-map-marker-alt text-xs opacity-50"></i> ${posto.cidade}
+                        </p>
+                        
+                        <div class="mt-auto border-t border-slate-100 pt-4 flex justify-between items-center">
+                            <div class="flex items-center gap-3">
+                                <div class="flex -space-x-2">
+                                    <div class="w-8 h-8 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-slate-400 text-xs"><i class="fas fa-user"></i></div>
+                                    <div class="w-8 h-8 rounded-full bg-slate-50 border-2 border-white flex items-center justify-center text-slate-400 text-[10px] font-bold">+${posto.total_funcionarios > 0 ? posto.total_funcionarios : 0}</div>
+                                </div>
+                                <span class="text-xs font-medium text-slate-600">Colaboradores</span>
+                            </div>
+                            <button class="text-slate-400 hover:text-[#b91c1c] transition"><i class="fas fa-chevron-right"></i></button>
                         </div>
                     </div>
                 `;
+                grid.appendChild(card);
             });
+
+            // Exibir Grid
+            loader.classList.add('hidden');
+            grid.classList.remove('hidden');
+            setTimeout(() => grid.classList.remove('opacity-0'), 50);
 
         } catch (error) {
             console.error(error);
-            grid.innerHTML = '<p class="col-span-full text-red-500 text-center">Erro ao carregar unidades.</p>';
+            loader.innerHTML = '<p class="text-red-500">Erro ao carregar unidades.</p>';
         }
     }
+
+    // Lógica Visual das Bandeiras
+    function getEstiloBandeira(nome) {
+        if (nome.includes('SHELL')) return { bg: 'bg-gradient-to-r from-yellow-400 to-red-500', text: 'text-yellow-600', icon: '<i class="fas fa-gem text-yellow-500"></i>' }; // Shell (Amarelo/Vermelho)
+        if (nome.includes('VIBRA') || nome.includes('BR')) return { bg: 'bg-gradient-to-r from-green-400 to-yellow-300', text: 'text-green-600', icon: '<i class="fas fa-leaf text-green-500"></i>' }; // BR (Verde/Amarelo)
+        if (nome.includes('IPIRANGA')) return { bg: 'bg-gradient-to-r from-blue-500 to-orange-400', text: 'text-blue-600', icon: '<i class="fas fa-road text-blue-500"></i>' }; // Ipiranga (Azul/Laranja)
+        if (nome.includes('BELLAS')) return { bg: 'bg-gradient-to-r from-[#b91c1c] to-red-600', text: 'text-red-600', icon: '<i class="fas fa-star text-red-600"></i>' }; // Marca Própria
+        
+        // Padrão (Cinza)
+        return { bg: 'bg-gradient-to-r from-slate-400 to-slate-600', text: 'text-slate-500', icon: '<i class="fas fa-gas-pump text-slate-500"></i>' };
+    }
+
+    // --- CRUD ---
 
     async function salvarPosto(e) {
         e.preventDefault();
@@ -173,41 +165,76 @@
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
         
+        const id = document.getElementById('posto-id').value;
+        const method = id ? 'PATCH' : 'POST';
+        const url = id ? `/api/core/postos/${id}/` : '/api/core/postos/';
+
         try {
-            const res = await fetch('/api/core/postos/', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
+            const res = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': getCookie('csrftoken') },
                 body: JSON.stringify(data)
             });
-
             if (res.ok) {
-                fecharModal();
-                form.reset();
+                fecharModalPosto();
                 carregarPostos();
-            } else {
-                alert('Erro ao criar unidade.');
-            }
+            } else { alert('Erro ao salvar.'); }
+        } catch (e) { console.error(e); }
+    }
+
+    async function editarPosto(id) {
+        try {
+            const res = await fetch(`/api/core/postos/${id}/`);
+            const posto = await res.json();
+            
+            abrirModalPosto(); // Carrega select de bandeiras
+            document.getElementById('modal-titulo').innerText = "Editar Unidade";
+            document.getElementById('posto-id').value = posto.id;
+            
+            // Popula campos
+            const form = document.getElementById('form-posto');
+            form.elements['nome'].value = posto.nome;
+            form.elements['cidade'].value = posto.cidade;
+            form.elements['endereco'].value = posto.endereco;
+            form.elements['cnpj'].value = posto.cnpj;
+            
+            // Delay pequeno para garantir que o select foi populado
+            setTimeout(() => {
+                form.elements['bandeira'].value = posto.bandeira;
+            }, 100);
+
         } catch(e) { console.error(e); }
     }
 
-    function abrirModal() { document.getElementById('modal-novo').classList.remove('hidden'); }
-    function fecharModal() { document.getElementById('modal-novo').classList.add('hidden'); }
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+    function abrirModalPosto() {
+        document.getElementById('form-posto').reset();
+        document.getElementById('posto-id').value = '';
+        document.getElementById('modal-titulo').innerText = "Nova Unidade";
+        
+        // Popula Select Bandeiras
+        const select = document.getElementById('select-bandeira');
+        select.innerHTML = '';
+        if (CACHE_BANDEIRAS.length > 0) {
+            CACHE_BANDEIRAS.forEach(b => {
+                select.innerHTML += `<option value="${b.id}">${b.nome}</option>`;
+            });
+        } else {
+            select.innerHTML = '<option>Carregando...</option>';
         }
-        return cookieValue;
+
+        document.getElementById('modal-posto').classList.remove('hidden');
+    }
+
+    function fecharModalPosto() { document.getElementById('modal-posto').classList.add('hidden'); }
+    
+    function getCookie(name) {
+        let v = null;
+        if (document.cookie && document.cookie !== '') {
+            document.cookie.split(';').forEach(c => {
+                if (c.trim().substring(0, name.length + 1) === (name + '=')) v = decodeURIComponent(c.trim().substring(name.length + 1));
+            });
+        }
+        return v;
     }
 
     carregarPostos();

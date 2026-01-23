@@ -1,106 +1,262 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 
 {% block title %}Dashboard - Rede Bellas{% endblock %}
 
 {% block content %}
-<div class="flex flex-col h-full">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="p-8 min-h-screen">
     
-    <div class="bg-white border-b border-gray-200 px-6 py-4 mb-6 flex justify-between items-center shadow-sm">
+    <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
-            <h1 class="text-xl font-bold text-gray-800 tracking-tight">Dashboard Geral</h1>
-            <p class="text-xs text-gray-500 font-medium">Visão consolidada da rede</p>
+            <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Visão Geral</h1>
+            <p class="text-slate-500 mt-1 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                Bem-vindo, {{ user.first_name|default:user.username }}!
+            </p>
         </div>
-        <div class="text-xs text-gray-400 font-mono">
-            {% now "d/m/Y H:i" %}
+        <div class="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-100 flex items-center gap-3">
+            <div class="p-2 bg-slate-100 rounded-lg text-slate-500">
+                <i class="far fa-calendar-alt"></i>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Hoje</p>
+                <p class="text-sm font-bold text-slate-700" id="data-hoje">--/--/----</p>
+            </div>
         </div>
     </div>
 
-    <div class="px-6 pb-6">
+    <div id="dashboard-loader" class="flex flex-col items-center justify-center py-20 animate-pulse">
+        <div class="w-16 h-16 border-4 border-slate-200 border-t-[#f97316] rounded-full animate-spin mb-4"></div>
+        <p class="text-slate-400 font-medium">Sincronizando dados...</p>
+    </div>
+
+    <div id="dashboard-content" class="hidden opacity-0 transition-opacity duration-700 ease-in-out">
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
             
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all group">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Funcionários Ativos</h3>
-                        <p class="text-3xl font-bold text-gray-800" id="lblTotalFunc">--</p>
-                    </div>
-                    <div class="p-3 bg-red-50 rounded-lg text-[#b91c1c] group-hover:bg-[#b91c1c] group-hover:text-white transition-colors">
-                        <i class="fas fa-users text-lg"></i>
-                    </div>
+            <div class="bg-white p-6 rounded-2xl shadow-[0_4px_20px_-4px_rgba(249,115,22,0.15)] border border-orange-100 flex items-center justify-between group hover:-translate-y-1 transition duration-300">
+                <div>
+                    <p class="text-xs font-bold text-orange-400 uppercase tracking-wider mb-2">Suporte TI</p>
+                    <h3 class="text-4xl font-black text-slate-800" id="kpi-chamados">0</h3>
+                    <p class="text-xs text-slate-400 mt-2">Chamados em aberto</p>
                 </div>
-                <div class="mt-4 flex items-center text-xs text-gray-400">
-                    <span class="text-green-500 font-bold mr-1"><i class="fas fa-arrow-up"></i> 2%</span> desde mês passado
+                <div class="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-500 text-2xl shadow-inner">
+                    <i class="fas fa-headset"></i>
                 </div>
             </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-[0_4px_20px_-4px_rgba(59,130,246,0.15)] border border-blue-100 flex items-center justify-between group hover:-translate-y-1 transition duration-300">
+                <div>
+                    <p class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2">Colaboradores</p>
+                    <h3 class="text-4xl font-black text-slate-800" id="kpi-funcionarios">0</h3>
+                    <p class="text-xs text-slate-400 mt-2">Ativos na plataforma</p>
+                </div>
+                <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-blue-500 text-2xl shadow-inner">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-[0_4px_20px_-4px_rgba(16,185,129,0.15)] border border-emerald-100 flex items-center justify-between group hover:-translate-y-1 transition duration-300">
+                <div>
+                    <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-2">Unidades Físicas</p>
+                    <h3 class="text-4xl font-black text-slate-800" id="kpi-postos">0</h3>
+                    <p class="text-xs text-slate-400 mt-2">Unidades cadastradas</p>
+                </div>
+                <div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-500 text-2xl shadow-inner">
+                    <i class="fas fa-gas-pump"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
             
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all group">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Postos Operando</h3>
-                        <p class="text-3xl font-bold text-gray-800" id="lblTotalPostos">--</p>
-                    </div>
-                    <div class="p-3 bg-orange-50 rounded-lg text-[#f97316] group-hover:bg-[#f97316] group-hover:text-white transition-colors">
-                        <i class="fas fa-gas-pump text-lg"></i>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 lg:col-span-1 flex flex-col">
+                <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <i class="fas fa-chart-pie text-[#f97316]"></i> Status de Atendimentos
+                </h3>
+                <div class="flex-1 flex items-center justify-center relative">
+                    <canvas id="chartChamados"></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-3xl font-bold text-slate-700" id="total-donut">0</span>
+                        <span class="text-[10px] uppercase text-slate-400 font-bold">Total</span>
                     </div>
                 </div>
-                <div class="mt-4 flex items-center text-xs text-gray-400">
-                    <span class="text-gray-500 mr-1">Todos operantes</span> hoje
+                <div class="mt-6 grid grid-cols-2 gap-4 text-xs">
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span> Novos</div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-500"></span> Em Andamento</div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-yellow-400"></span> Aguardando</div>
+                    <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span> Resolvidos</div>
                 </div>
             </div>
 
-            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all group">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Alertas Pendentes</h3>
-                        <p class="text-3xl font-bold text-gray-800">0</p>
-                    </div>
-                    <div class="p-3 bg-yellow-50 rounded-lg text-yellow-600 group-hover:bg-yellow-500 group-hover:text-white transition-colors">
-                        <i class="fas fa-bell text-lg"></i>
-                    </div>
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 lg:col-span-2">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-bold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-building text-[#b91c1c]"></i> Distribuição de Equipe
+                    </h3>
+                    <button class="text-xs font-bold text-slate-400 hover:text-[#b91c1c] transition">Ver Detalhes</button>
                 </div>
-                <div class="mt-4 flex items-center text-xs text-gray-400">
-                    <span class="text-green-500 mr-1"><i class="fas fa-check"></i></span> Tudo normal
+                <div class="h-80 w-full">
+                    <canvas id="chartFuncionarios"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 ml-1">Ações Frequentes</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <a href="{% url 'ti_chamados' %}" class="bg-gradient-to-br from-[#f97316] to-orange-600 text-white p-4 rounded-xl shadow-lg shadow-orange-200 hover:shadow-orange-300 hover:-translate-y-0.5 transition flex items-center justify-between group">
+                    <span class="font-bold text-sm">Abrir Chamado</span>
+                    <i class="fas fa-plus-circle text-white/50 group-hover:text-white transition"></i>
+                </a>
+                
+                <a href="{% url 'funcionarios' %}" class="bg-white border border-slate-200 p-4 rounded-xl text-slate-600 hover:border-[#b91c1c] hover:text-[#b91c1c] transition flex items-center justify-between group">
+                    <span class="font-bold text-sm">Novo Colaborador</span>
+                    <i class="fas fa-user-plus text-slate-300 group-hover:text-[#b91c1c] transition"></i>
+                </a>
+
+                <a href="{% url 'postos' %}" class="bg-white border border-slate-200 p-4 rounded-xl text-slate-600 hover:border-blue-500 hover:text-blue-500 transition flex items-center justify-between group">
+                    <span class="font-bold text-sm">Gerir Unidades</span>
+                    <i class="fas fa-store text-slate-300 group-hover:text-blue-500 transition"></i>
+                </a>
+
+                <div class="bg-slate-50 border border-slate-200 border-dashed p-4 rounded-xl text-slate-400 flex items-center justify-center cursor-not-allowed">
+                    <span class="text-xs font-medium">Em breve...</span>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <h3 class="font-bold text-gray-800 mb-4 text-sm uppercase tracking-wide">Ações Frequentes</h3>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                
-                <a href="{% url 'funcionarios' %}" class="p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-[#b91c1c]/50 hover:text-[#b91c1c] text-gray-600 font-medium transition flex items-center justify-center gap-3 group">
-                    <i class="fas fa-user-plus text-lg text-gray-400 group-hover:text-[#b91c1c] transition"></i>
-                    <span>Novo Funcionário</span>
-                </a>
-                
-                <button class="p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-[#f97316]/50 hover:text-[#f97316] text-gray-600 font-medium transition flex items-center justify-center gap-3 group">
-                    <i class="fas fa-file-invoice-dollar text-lg text-gray-400 group-hover:text-[#f97316] transition"></i>
-                    <span>Lançar Venda</span>
-                </button>
-
-                 <a href="{% url 'ti_chamados' %}" class="p-4 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-blue-500/50 hover:text-blue-600 text-gray-600 font-medium transition flex items-center justify-center gap-3 group">
-                    <i class="fas fa-headset text-lg text-gray-400 group-hover:text-blue-600 transition"></i>
-                    <span>Abrir Chamado</span>
-                </a>
-            </div>
-        </div>
     </div>
 </div>
 
 <script>
-    async function carregarDados() {
+    document.getElementById('data-hoje').innerText = new Date().toLocaleDateString('pt-BR');
+
+    async function carregarDashboard() {
+        // Elementos de Loading e Conteúdo
+        const loader = document.getElementById('dashboard-loader');
+        const content = document.getElementById('dashboard-content');
+
         try {
-            const response = await fetch('/api/core/funcionarios/dashboard_metrics/');
-            if(response.ok) {
-                const dados = await response.json();
-                document.getElementById('lblTotalFunc').innerText = dados.cards.total_funcionarios;
-                document.getElementById('lblTotalPostos').innerText = dados.cards.total_postos;
-            }
+            // Delay artificial pequeno para garantir que o usuário veja a animação (UX)
+            // Se a API for muito rápida, evita o "piscar" da tela
+            await new Promise(r => setTimeout(r, 600));
+
+            const [resChamados, resFunc, resPostos] = await Promise.all([
+                fetch('/api/ti/chamados/'),
+                fetch('/api/core/funcionarios/'),
+                fetch('/api/core/postos/')
+            ]);
+
+            const chamados = await resChamados.json();
+            const funcionarios = await resFunc.json();
+            const postos = await resPostos.json();
+
+            // --- KPIs ---
+            const abertos = chamados.filter(c => c.status !== 'RESOLVIDO').length;
+            const ativos = funcionarios.filter(f => f.is_active).length;
+            
+            // Efeito de contagem (Animação de números)
+            animarNumero('kpi-chamados', abertos);
+            animarNumero('kpi-funcionarios', ativos);
+            animarNumero('kpi-postos', postos.length);
+            document.getElementById('total-donut').innerText = chamados.length;
+
+            // --- GRÁFICO 1: Donut Moderno ---
+            const statusCount = { 'NOVO': 0, 'ANDAMENTO': 0, 'AGUARDANDO': 0, 'RESOLVIDO': 0 };
+            chamados.forEach(c => { if (statusCount[c.status] !== undefined) statusCount[c.status]++; });
+
+            new Chart(document.getElementById('chartChamados'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Novos', 'Em Andamento', 'Aguardando', 'Resolvidos'],
+                    datasets: [{
+                        data: [statusCount.NOVO, statusCount.ANDAMENTO, statusCount.AGUARDANDO, statusCount.RESOLVIDO],
+                        backgroundColor: ['#3b82f6', '#f97316', '#eab308', '#22c55e'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%', // Deixa o donut mais fino e elegante
+                    plugins: {
+                        legend: { display: false }, // Ocultei a legenda padrão feia
+                        tooltip: {
+                            backgroundColor: '#1e293b',
+                            padding: 12,
+                            cornerRadius: 8,
+                            displayColors: false
+                        }
+                    }
+                }
+            });
+
+            // --- GRÁFICO 2: Barras Arredondadas ---
+            const postosMap = {};
+            funcionarios.forEach(f => {
+                const nome = f.posto_nome || 'Matriz';
+                postosMap[nome] = (postosMap[nome] || 0) + 1;
+            });
+
+            new Chart(document.getElementById('chartFuncionarios'), {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(postosMap),
+                    datasets: [{
+                        label: 'Colaboradores',
+                        data: Object.values(postosMap),
+                        backgroundColor: '#b91c1c',
+                        borderRadius: 6, // Arredonda o topo das barras
+                        barThickness: 40, // Largura fixa mais elegante
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            grid: { color: '#f1f5f9', borderDash: [5, 5] },
+                            border: { display: false }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            border: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // Transição Suave: Esconde Loader -> Mostra Conteúdo
+            loader.classList.add('hidden');
+            content.classList.remove('hidden');
+            // Pequeno delay para permitir o browser renderizar o DOM antes de mudar opacidade
+            setTimeout(() => content.classList.remove('opacity-0'), 50);
+
         } catch (error) {
-            console.error("Erro ao carregar dashboard", error);
+            console.error(error);
+            loader.innerHTML = '<p class="text-red-500">Erro ao carregar dados.</p>';
         }
     }
-    carregarDados();
+
+    // Função utilitária para animar números (0 -> Valor Final)
+    function animarNumero(id, valorFinal) {
+        const elemento = document.getElementById(id);
+        let start = 0;
+        const duration = 1000;
+        const step = timestamp => {
+            if (!start) start = timestamp;
+            const progress = Math.min((timestamp - start) / duration, 1);
+            elemento.innerText = Math.floor(progress * valorFinal);
+            if (progress < 1) window.requestAnimationFrame(step);
+        };
+        window.requestAnimationFrame(step);
+    }
+
+    carregarDashboard();
 </script>
 {% endblock %}

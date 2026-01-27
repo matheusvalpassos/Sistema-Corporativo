@@ -34,7 +34,6 @@ class ChamadoViewSet(viewsets.ModelViewSet):
         if user.posto_trabalho and getattr(user, 'cargo', '') in ['GER_POSTO', 'GER_SETOR']:
             return Chamado.objects.filter(posto=user.posto_trabalho).order_by('-criado_em')
         
-        # 3. VISÃO PADRÃO (Funcionário comum): Vê apenas os chamados que ELE abriu, independente do posto
         return Chamado.objects.filter(solicitante=user).order_by('-criado_em')
 
 

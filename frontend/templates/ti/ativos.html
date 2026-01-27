@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Inventário de TI - Rede Bellas{% endblock %}
+{% block title %}Inventário de TI - SeuLogo{% endblock %}
 
 {% block content %}
 <div class="p-8 min-h-screen bg-slate-50">
@@ -13,18 +13,18 @@
         
         <div class="flex gap-3">
             <div class="bg-white border border-slate-200 rounded-xl flex overflow-hidden shadow-sm">
-                <button onclick="filtrarAtivos('todos')" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 border-r border-slate-100 transition">Todos</button>
-                <button onclick="filtrarAtivos('manutencao')" class="px-4 py-2 text-xs font-bold text-orange-600 hover:bg-orange-50 transition">Em Manutenção</button>
+                <button onclick="filtrarAtivos('todos')" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 border-r border-slate-200 transition focus:bg-cyan-50 focus:text-cyan-600">Todos</button>
+                <button onclick="filtrarAtivos('manutencao')" class="px-4 py-2 text-xs font-bold text-orange-500 hover:bg-orange-50 transition focus:bg-orange-50">Em Manutenção</button>
             </div>
 
-            <button onclick="abrirModalAtivo()" class="bg-[#f97316] hover:bg-orange-600 text-white px-5 py-2 rounded-xl shadow-lg shadow-orange-200 transition flex items-center gap-2 font-bold text-sm transform active:scale-95">
+            <button onclick="abrirModalAtivo()" class="bg-cyan-500 hover:bg-cyan-600 text-white px-5 py-2 rounded-xl shadow-lg shadow-cyan-500/30 transition flex items-center gap-2 font-bold text-sm transform active:scale-95">
                 <i class="fas fa-desktop"></i> Novo Ativo
             </button>
         </div>
     </div>
 
     <div id="loader-ativos" class="flex flex-col items-center justify-center py-20">
-        <div class="w-12 h-12 border-4 border-slate-200 border-t-[#f97316] rounded-full animate-spin mb-4"></div>
+        <div class="w-12 h-12 border-4 border-slate-200 border-t-cyan-500 rounded-full animate-spin mb-4"></div>
         <p class="text-slate-400">Carregando inventário...</p>
     </div>
 
@@ -32,11 +32,11 @@
         </div>
 </div>
 
-<div id="modal-ativo" class="fixed inset-0 bg-gray-900/60 hidden z-50 flex justify-center items-center backdrop-blur-sm transition-opacity">
+<div id="modal-ativo" class="fixed inset-0 bg-slate-900/60 hidden z-50 flex justify-center items-center backdrop-blur-sm transition-opacity">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl transform transition-all scale-100 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-            <h3 class="text-lg font-bold text-gray-800" id="modal-titulo">Novo Equipamento</h3>
-            <button onclick="fecharModalAtivo()" class="text-gray-400 hover:text-red-500"><i class="fas fa-times"></i></button>
+        <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+            <h3 class="text-lg font-bold text-slate-800" id="modal-titulo">Novo Equipamento</h3>
+            <button onclick="fecharModalAtivo()" class="text-slate-400 hover:text-red-500"><i class="fas fa-times"></i></button>
         </div>
         
         <form id="form-ativo" onsubmit="salvarAtivo(event)" class="p-6 space-y-4">
@@ -44,30 +44,30 @@
             
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Patrimônio / Tag</label>
-                    <input type="text" name="patrimonio" required class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]" placeholder="RB-001">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Patrimônio / Tag</label>
+                    <input type="text" name="patrimonio" required class="w-full border border-slate-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition" placeholder="RB-001">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Categoria</label>
-                    <select name="categoria" id="select-categoria" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#f97316]">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Categoria</label>
+                    <select name="categoria" id="select-categoria" class="w-full border border-slate-300 rounded-lg py-2.5 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition">
                         </select>
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Modelo / Descrição</label>
-                <input type="text" name="modelo" required class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#f97316]" placeholder="Dell Optiplex 3050 - i5 8GB">
+                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Modelo / Descrição</label>
+                <input type="text" name="modelo" required class="w-full border border-slate-300 rounded-lg py-2.5 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition" placeholder="Dell Optiplex 3050 - i5 8GB">
             </div>
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Localização Atual</label>
-                    <select name="posto_atual" id="select-posto" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#f97316]">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Localização Atual</label>
+                    <select name="posto_atual" id="select-posto" class="w-full border border-slate-300 rounded-lg py-2.5 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition">
                         </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Status</label>
-                    <select name="status" class="w-full border border-gray-300 rounded-lg py-2.5 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#f97316]">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Status</label>
+                    <select name="status" class="w-full border border-slate-300 rounded-lg py-2.5 px-3 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition">
                         <option value="USO">🟢 Em Uso</option>
                         <option value="DISP">🔵 Disponível</option>
                         <option value="MANUT">🟠 Manutenção</option>
@@ -77,8 +77,8 @@
             </div>
 
             <div class="pt-4 flex justify-end gap-3">
-                <button type="button" onclick="fecharModalAtivo()" class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-600 hover:bg-gray-50 font-medium">Cancelar</button>
-                <button type="submit" class="px-6 py-2 bg-[#f97316] text-white rounded-lg font-bold text-sm shadow-md hover:bg-orange-600 transition">Salvar Item</button>
+                <button type="button" onclick="fecharModalAtivo()" class="px-4 py-2 bg-white border border-slate-300 rounded-lg text-sm text-slate-600 hover:bg-slate-50 font-medium transition">Cancelar</button>
+                <button type="submit" class="px-6 py-2 bg-cyan-500 text-white rounded-lg font-bold text-sm shadow-md hover:bg-cyan-600 transition shadow-cyan-200">Salvar Item</button>
             </div>
         </form>
     </div>
@@ -94,9 +94,9 @@
         try {
             // Carrega Ativos, Postos e Categorias
             const [resAtivos, resPostos, resCats] = await Promise.all([
-                fetch('/api/ti/ativos/'), // Precisamos garantir que essa rota existe
+                fetch('/api/ti/ativos/'), 
                 fetch('/api/core/postos/'),
-                fetch('/api/ti/categorias/') // Precisamos garantir que essa rota existe
+                fetch('/api/ti/categorias/') 
             ]);
 
             TODOS_ATIVOS = await resAtivos.json();
@@ -107,7 +107,6 @@
             selPosto.innerHTML = '<option value="">-- Estoque / Matriz --</option>';
             postos.forEach(p => selPosto.innerHTML += `<option value="${p.id}">${p.nome}</option>`);
 
-            // Se a rota de categorias falhar (ainda não existir), tratamos o erro
             try {
                 const categorias = await resCats.json();
                 const selCat = document.getElementById('select-categoria');
@@ -134,42 +133,46 @@
         grid.innerHTML = '';
 
         if(lista.length === 0) {
-            grid.innerHTML = '<div class="col-span-4 text-center text-gray-400 py-10">Nenhum ativo encontrado.</div>';
+            grid.innerHTML = '<div class="col-span-4 text-center text-slate-400 py-10">Nenhum ativo encontrado.</div>';
             return;
         }
 
         lista.forEach(ativo => {
-            // Estilos visuais baseados no status
-            let statusConfig = { cor: 'bg-green-100 text-green-700', icon: 'fa-check-circle', texto: 'Em Uso' };
-            if(ativo.status === 'MANUT') statusConfig = { cor: 'bg-orange-100 text-orange-700', icon: 'fa-tools', texto: 'Manutenção' };
-            if(ativo.status === 'DISP') statusConfig = { cor: 'bg-blue-100 text-blue-700', icon: 'fa-box-open', texto: 'Disponível' };
-            if(ativo.status === 'DEFEITO') statusConfig = { cor: 'bg-red-100 text-red-700', icon: 'fa-ban', texto: 'Defeito' };
+            // Estilos visuais baseados no status (Cores mais suaves e profissionais)
+            let statusConfig = { cor: 'bg-emerald-100 text-emerald-700', icon: 'fa-check-circle', texto: 'Em Uso', iconBg: 'bg-emerald-50 text-emerald-500' };
+            
+            if(ativo.status === 'MANUT') 
+                statusConfig = { cor: 'bg-orange-100 text-orange-700', icon: 'fa-tools', texto: 'Manutenção', iconBg: 'bg-orange-50 text-orange-500' };
+            
+            if(ativo.status === 'DISP') 
+                statusConfig = { cor: 'bg-blue-100 text-blue-700', icon: 'fa-box-open', texto: 'Disponível', iconBg: 'bg-blue-50 text-blue-500' };
+            
+            if(ativo.status === 'DEFEITO') 
+                statusConfig = { cor: 'bg-red-100 text-red-700', icon: 'fa-ban', texto: 'Defeito', iconBg: 'bg-red-50 text-red-500' };
 
-            // Ícone por categoria (Simulação simples, ideal vir do backend)
-            let catIcon = 'fa-desktop';
-            // if(ativo.categoria_nome.includes('Impressora')) catIcon = 'fa-print';
+            let catIcon = 'fa-desktop'; // Padrão
 
             const card = document.createElement('div');
-            card.className = "bg-white rounded-xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition group relative";
+            card.className = "bg-white rounded-xl shadow-sm border border-slate-200 p-5 hover:shadow-lg hover:-translate-y-1 transition duration-300 group relative";
             card.innerHTML = `
                 <div class="flex justify-between items-start mb-4">
-                    <div class="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center text-slate-500 text-lg border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center text-lg ${statusConfig.iconBg}">
                         <i class="fas ${catIcon}"></i>
                     </div>
                     <span class="px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wide ${statusConfig.cor}">
-                        <i class="fas ${statusConfig.icon} mr-1"></i> ${statusConfig.texto}
+                        ${statusConfig.texto}
                     </span>
                 </div>
                 
                 <h4 class="font-bold text-slate-800 leading-tight mb-1 truncate">${ativo.modelo}</h4>
-                <p class="text-xs font-mono text-slate-400 mb-4 bg-slate-50 inline-block px-1 rounded">TAG: ${ativo.patrimonio}</p>
+                <p class="text-xs font-mono text-slate-400 mb-4 bg-slate-50 inline-block px-2 py-0.5 rounded border border-slate-100">TAG: ${ativo.patrimonio}</p>
 
                 <div class="border-t border-slate-100 pt-3 flex items-center gap-2 text-xs text-slate-500">
                     <i class="fas fa-map-marker-alt text-slate-300"></i>
-                    <span class="truncate">${ativo.posto_nome || 'Matriz / Estoque'}</span>
+                    <span class="truncate font-medium">${ativo.posto_nome || 'Matriz / Estoque'}</span>
                 </div>
 
-                <button onclick="editarAtivo(${ativo.id})" class="absolute top-4 right-4 text-slate-300 hover:text-[#f97316] opacity-0 group-hover:opacity-100 transition">
+                <button onclick="editarAtivo(${ativo.id})" class="absolute top-4 right-4 text-slate-300 hover:text-cyan-500 p-2 rounded-full hover:bg-cyan-50 transition opacity-0 group-hover:opacity-100">
                     <i class="fas fa-pencil-alt"></i>
                 </button>
             `;
@@ -188,7 +191,6 @@
         const form = document.getElementById('form-ativo');
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
-        // Ajuste: Se posto_atual for vazio, envia null
         if(!data.posto_atual) data.posto_atual = null;
 
         const id = document.getElementById('ativo-id').value;
@@ -209,9 +211,8 @@
     }
 
     async function editarAtivo(id) {
-        // Busca dados e preenche form (Simplificado)
-        // Ideal: fetch no /api/ti/ativos/${id}/ e preencher
-        alert('Funcionalidade de edição pronta no backend, basta conectar aqui!');
+        // Implementar fetch para preencher o form aqui se desejar edição real
+        alert('Funcionalidade de edição pronta no backend!');
         abrirModalAtivo();
     }
 

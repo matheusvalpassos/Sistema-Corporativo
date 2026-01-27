@@ -3,7 +3,6 @@ from django.conf import settings # Para pegar o modelo de Usuário
 from core.models import Posto
 
 class CategoriaAtivo(models.Model):
-    """Ex: Computador, Impressora Térmica, PinPad, Nobreak, Monitor"""
     nome = models.CharField(max_length=100)
     
     def __str__(self):
@@ -17,17 +16,12 @@ class Ativo(models.Model):
         ('BAIXA', 'Baixado/Descartado'),
     )
 
-    nome = models.CharField(max_length=100) # Ex: PC Caixa 01
-    patrimonio = models.CharField(max_length=50, unique=True) # Etiqueta da empresa
+    nome = models.CharField(max_length=100)
+    patrimonio = models.CharField(max_length=50, unique=True)
     serial_number = models.CharField(max_length=100, blank=True, null=True)
     categoria = models.ForeignKey(CategoriaAtivo, on_delete=models.PROTECT)
-    
-    # Onde este equipamento está?
     posto_atual = models.ForeignKey(Posto, on_delete=models.SET_NULL, null=True, related_name='ativos_ti')
-    
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='USO')
-    
-    # Dados técnicos úteis para suporte remoto
     ip_address = models.GenericIPAddressField(blank=True, null=True)
     anydesk_id = models.CharField(max_length=50, blank=True, null=True)
     
@@ -53,24 +47,18 @@ class Chamado(models.Model):
 
     titulo = models.CharField(max_length=200)
     descricao = models.TextField()
-    
-    # Quem pediu? (Geralmente gerente do posto)
+    # Quem pediu?
     solicitante = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chamados_abertos')
-    
-    # Quem vai resolver? (Técnico de TI)
+    # Quem vai resolver?
     tecnico = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='chamados_tecnicos')
-    
-    # O problema é em qual equipamento? (Opcional, pois pode ser internet)
+    # O problema é em qual equipamento? 
     ativo_relacionado = models.ForeignKey(Ativo, on_delete=models.SET_NULL, null=True, blank=True)
-    posto = models.ForeignKey(Posto, on_delete=models.CASCADE) # Para facilitar filtros
-    
+    posto = models.ForeignKey(Posto, on_delete=models.CASCADE)
     prioridade = models.CharField(max_length=1, choices=PRIORIDADE, default='2')
     status = models.CharField(max_length=10, choices=STATUS, default='NOVO')
-    
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
     fechado_em = models.DateTimeField(null=True, blank=True)
-
     arquivo = models.FileField(upload_to='chamados_anexos/', null=True, blank=True)
 
     def __str__(self):
@@ -83,6 +71,4 @@ class Acompanhamento(models.Model):
     texto = models.TextField()
     anexo = models.FileField(upload_to='chamados_anexos/', null=True, blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
-    
-    # Se essa mensagem é interna (só TI vê) ou pública (usuário vê)
     is_interno = models.BooleanField(default=False)

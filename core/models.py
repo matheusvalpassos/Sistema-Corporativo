@@ -3,13 +3,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class Bandeira(models.Model):
-    nome = models.CharField(max_length=50) # Ex: Shell, Ipiranga
+    nome = models.CharField(max_length=50)
     
     def __str__(self):
         return self.nome
 
 class Posto(models.Model):
-    nome = models.CharField(max_length=100) # Ex: "Posto Centro", "Posto Rodovia"
+    nome = models.CharField(max_length=100)
     cnpj = models.CharField(max_length=18, unique=True)
     cidade = models.CharField(max_length=100)
     endereco = models.CharField(max_length=200, blank=True, null=True)
@@ -31,13 +31,13 @@ class Funcionario(AbstractUser):
         ('RH',  'Recursos Humanos'),
         ('MARKETING', 'Marketing'),
         ('ADM', 'Administrativo'),
-        ('OPERACIONAL', 'Operacional de Pista'), # Para frentistas
+        ('OPERACIONAL', 'Operacional de Pista'), 
     )
-
-    # Cargos (Vertical - Define o nível de poder)
+    
+    # Cargos (Vertical)
     CARGOS = (
         ('CEO', 'CEO'),
-        ('GER_SETOR', 'Gerente de Setor (Matriz)'), # Gerente TI, RH, Comercial Geral
+        ('GER_SETOR', 'Gerente de Setor (Matriz)'), 
         ('GER_POSTO', 'Gerente de Posto'),
         ('SUB_GER',   'Subgerente'),
         ('ESPEC',     'Especialista/Técnico'),
@@ -47,12 +47,8 @@ class Funcionario(AbstractUser):
 
     setor = models.CharField(max_length=11, choices=SETORES, default='OPERACIONAL')
     cargo = models.CharField(max_length=10, choices=CARGOS, default='FRENT')
-    
-    # O Pulo do Gato: Vínculo com a Unidade
-    # Se for Null, significa que é da MATRIZ (Vê tudo ou não tem posto fixo)
     posto_trabalho = models.ForeignKey(Posto, on_delete=models.SET_NULL, null=True, blank=True, related_name='equipe')
     
-    # Dados para Gestão/RH
     matricula = models.CharField(max_length=20, unique=True, null=True, blank=True)
     cpf = models.CharField(max_length=14, unique=True, null=True)
     telefone = models.CharField(max_length=20, blank=True)
@@ -63,11 +59,8 @@ class Funcionario(AbstractUser):
     
     foto_perfil = models.ImageField(upload_to='perfil/', blank=True, null=True)
 
-    # SOBRESCREVER O MÉTODO SAVE PARA GERAR MATRÍCULA
     def save(self, *args, **kwargs):
         if not self.matricula:
-            # Gera um Hexadecimal de 8 dígitos (Ex: A1B2C3D4)
-            # uuid4 gera algo longo, pegamos os primeiros 8 caracteres e deixamos maiúsculo
             self.matricula = uuid.uuid4().hex[:8].upper()
             
             # (Opcional) Segurança extra: Garantir que é único num loop
@@ -79,7 +72,6 @@ class Funcionario(AbstractUser):
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.get_cargo_display()})"
     
-    # Helper para saber se é "Chefe"
     @property
     def is_decision_maker(self):
         return self.cargo in ['CEO', 'GER_SETOR', 'GER_POSTO']

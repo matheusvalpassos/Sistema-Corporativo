@@ -9,6 +9,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='/admin/login/')
+def home(request):
+    return render(request, 'index.html')
 
 class PostoViewSet(viewsets.ModelViewSet):
     queryset = Posto.objects.all()
@@ -20,18 +23,13 @@ class FuncionarioViewSet(viewsets.ModelViewSet):
     serializer_class = FuncionarioSerializer
     permission_classes = [IsAuthenticated]
 
-    # Rota personalizada para devolver dados do Dashboard
-    # URL final: /api/core/funcionarios/dashboard_metrics/
     @action(detail=False, methods=['get'])
     def dashboard_metrics(self, request):
         total_ativos = Funcionario.objects.filter(is_active=True).count()
         total_postos = Posto.objects.count()
         
-        # Agrupamento: Quantos funcionários por cargo?
-        # Ex: [{'cargo': 'FRENT', 'total': 15}, {'cargo': 'GER_POSTO', 'total': 3}]
         por_cargo = Funcionario.objects.filter(is_active=True).values('cargo').annotate(total=Count('id'))
         
-        # Custo Mensal Estimado (Soma dos salários)
         custo_folha = Funcionario.objects.filter(is_active=True).aggregate(Sum('salario_base'))['salario_base__sum'] or 0
 
         return Response({
@@ -51,25 +49,19 @@ class BandeiraViewSet(viewsets.ModelViewSet):
     serializer_class = BandeiraSerializer
     permission_classes = [IsAuthenticated]        
 
-# Essa função apenas "pinta" o HTML na tela
-@login_required(login_url='/admin/login/') # Se não estiver logado, manda pro login do Admin por enquanto
-def home(request):
-    return render(request, 'index.html')
 
-# Chamamos essa função quando acessamos /funcionarios/ pro HTML renderizar as funções
+
 @login_required(login_url='/admin/login/')
 def lista_funcionarios(request):
-    # Passamos as tuplas de opções e a lista de postos reais para o HTML
     context = {
         'opcoes_setores': Funcionario.SETORES,
         'opcoes_cargos': Funcionario.CARGOS,
-        'lista_postos': Posto.objects.all(), # Para preencher o select de postos
+        'lista_postos': Posto.objects.all(),
     }
     return render(request, 'funcionarios.html', context)
 
 @login_required(login_url='login')
 def lista_postos(request):
-    # Busca todas as bandeiras cadastradas para o select
     opcoes_bandeiras = Bandeira.objects.all()
     return render(request, 'postos.html', {'opcoes_bandeiras': opcoes_bandeiras})
 
@@ -92,14 +84,12 @@ def perfil_usuario(request):
         if 'foto_perfil' in request.FILES:
             user.foto_perfil = request.FILES['foto_perfil']
         
-        # 2. Atualizar Senha (se preenchida)
         nova_senha = request.POST.get('password')
         confirma_senha = request.POST.get('confirm_password')
         
         if nova_senha and confirma_senha:
             if nova_senha == confirma_senha:
                 user.set_password(nova_senha)
-                # Mantém o usuário logado após mudar senha
                 from django.contrib.auth import update_session_auth_hash
                 update_session_auth_hash(request, user)
                 messages.success(request, "Senha alterada com sucesso!")
@@ -107,7 +97,6 @@ def perfil_usuario(request):
                 messages.error(request, "As senhas não conferem.")
                 return render(request, 'perfil.html')
 
-        # 3. Salvar
         try:
             user.save()
             messages.success(request, "Perfil atualizado!")

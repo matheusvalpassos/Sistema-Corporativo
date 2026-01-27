@@ -28,7 +28,6 @@ class ChamadoSerializer(serializers.ModelSerializer):
     tecnico_nome = serializers.ReadOnlyField(source='tecnico.first_name')
     tecnico_foto = serializers.SerializerMethodField()
     
-    # Traz as últimas interações junto (opcional, facilita o front)
     acompanhamentos = AcompanhamentoSerializer(many=True, read_only=True)
 
     class Meta:
